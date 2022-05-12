@@ -17,9 +17,9 @@ export class LoggerInterceptor implements NestInterceptor {
           return throwError(() => err);
         } else {
           console.log(
-            `${err.name} in ${context.getHandler().name} at ${
-              context.getClass().name
-            }`,
+            `${err.name}${err.message ? ': ' + err.message : ''} in ${
+              context.getHandler().name
+            } at ${context.getClass().name}`,
           ); // 처리되지 않은 비정상 에러만 로깅하도록 한다.
           return throwError(
             () =>
