@@ -4,7 +4,8 @@ import { UserEntity } from 'src/users/user.entity';
 import { AuthenticateUserDTO } from 'src/users/users.dto';
 import { UsersService } from 'src/users/users.service';
 import { validate } from 'class-validator';
-import { HttpExceptionService } from 'src/httpException/httpException.service';
+import { HttpExceptionService } from 'src/httpException/http-exception.service';
+import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,9 @@ export class AuthService {
     const data = plainToInstance(AuthenticateUserDTO, dto);
     const errors = await validate(data);
     for (const error of errors) {
-      const message = Object.entries(error.constraints)[0][1];
+      const message = Object.entries(
+        error.constraints,
+      )[0][1] as ExceptionMessage;
       throw this.httpExceptionService.getBadRequestException(message);
     }
     return this.usersService.findAuthenticatedUser(data);
