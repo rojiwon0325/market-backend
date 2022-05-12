@@ -1,3 +1,4 @@
+import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import {
   NestInterceptor,
   ExecutionContext,
@@ -22,10 +23,7 @@ export class LoggerInterceptor implements NestInterceptor {
             } at ${context.getClass().name}`,
           ); // 처리되지 않은 비정상 에러만 로깅하도록 한다.
           return throwError(
-            () =>
-              new InternalServerErrorException(
-                '예기치 못한 오류가 발생했습니다.',
-              ),
+            () => new InternalServerErrorException(ExceptionMessage.UNEXPECTED),
           );
         }
       }),
