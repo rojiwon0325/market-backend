@@ -5,10 +5,10 @@ import { Document } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import * as MUUID from 'uuid-mongodb';
 
-export type UserDocument = User & Document;
+export type UserDocument = UserEntity & Document;
 
 @Schema()
-export class User {
+export class UserEntity {
   @Exclude()
   _id: string;
 
@@ -36,9 +36,9 @@ export class User {
 }
 
 export const UserSchemaProvider = {
-  name: User.name,
+  name: UserEntity.name,
   useFactory: () => {
-    const schema = SchemaFactory.createForClass(User);
+    const schema = SchemaFactory.createForClass(UserEntity);
     schema.pre('save', function (next) {
       const user = this as UserDocument;
       bcrypt.genSalt(10, (err, salt) => {

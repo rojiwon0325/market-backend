@@ -1,9 +1,9 @@
 import { PickType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsString } from 'class-validator';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 
-export class CreateUserDTO extends PickType(User, [
+export class CreateUserDTO extends PickType(UserEntity, [
   'username',
   'email',
   'phone',
@@ -13,7 +13,7 @@ export class CreateUserDTO extends PickType(User, [
   password: string;
 }
 
-export class DeleteUserDTO extends PickType(User, ['email']) {
+export class AuthenticateUserDTO extends PickType(UserEntity, ['email']) {
   @IsString()
   @Type(() => String)
   password: string;
