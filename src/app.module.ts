@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { CommonModule } from './common/common.module';
 import { HttpExceptionModule } from './httpException/httpException.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { HttpExceptionModule } from './httpException/httpException.module';
     UsersModule,
     CommonModule,
     HttpExceptionModule,
+    AuthModule,
   ],
   controllers: [],
 })
