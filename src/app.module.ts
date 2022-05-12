@@ -4,7 +4,7 @@ import * as Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { CommonModule } from './common/common.module';
-import { HttpExceptionModule } from './httpException/httpException.module';
+import { HttpExceptionModule } from './httpException/http-exception.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({

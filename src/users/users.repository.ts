@@ -9,6 +9,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { UserDocument, UserEntity } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { AuthenticateUserDTO } from './users.dto';
+import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 
 @Injectable()
 export class UsersRepository {
@@ -38,9 +39,9 @@ export class UsersRepository {
     if (user) {
       const same = await bcrypt.compare(password, user.password);
       if (!same)
-        throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
+        throw new UnauthorizedException(ExceptionMessage.INCORRECT_PASSWORD);
       return plainToInstance(UserEntity, user.toObject());
-    } else throw new NotFoundException('사용자를 찾지 못했습니다.');
+    } else throw new NotFoundException(ExceptionMessage.NOT_FOUND_USER);
   }
 
   async create(dto: Partial<UserEntity>): Promise<UserEntity> {

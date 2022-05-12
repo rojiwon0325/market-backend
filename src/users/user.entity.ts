@@ -4,6 +4,7 @@ import { Exclude } from 'class-transformer';
 import { Document } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import * as MUUID from 'uuid-mongodb';
+import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 
 export type UserDocument = UserEntity & Document;
 
@@ -16,11 +17,11 @@ export class UserEntity {
   @Prop({ required: true, default: () => MUUID.v4() })
   uid: string;
 
-  @IsString({ message: '올바른 형식이 아닙니다.' })
+  @IsString({ message: ExceptionMessage.VALIDATION })
   @Prop({ required: true })
   username: string;
 
-  @IsEmail({}, { message: '이메일 형식이 올바르지 않습니다.' })
+  @IsEmail({}, { message: ExceptionMessage.VALIDATION_EMAIL })
   @Prop({ required: true, unique: true })
   email: string;
 
@@ -29,7 +30,7 @@ export class UserEntity {
   password: string;
 
   // 010-0000-0000 형식을 지키도록 IsMatch와 정규표현식을 사용하는 것이 좋을 것 같음
-  @IsString({ message: '올바른 형식이 아닙니다.' })
+  @IsString({ message: ExceptionMessage.VALIDATION })
   @IsOptional()
   @Prop()
   phone?: string;
