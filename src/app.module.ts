@@ -1,9 +1,10 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
-import { APP_PIPE } from '@nestjs/core';
+import { CommonModule } from './common/common.module';
+import { HttpExceptionModule } from './httpException/httpException.module';
 
 @Module({
   imports: [
@@ -25,13 +26,14 @@ import { APP_PIPE } from '@nestjs/core';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URL'),
+        uri: configService.get('MONGODB_URL'),
       }),
       inject: [ConfigService],
     }),
     UsersModule,
+    CommonModule,
+    HttpExceptionModule,
   ],
   controllers: [],
-  providers: [{ provide: APP_PIPE, useClass: ValidationPipe }],
 })
 export class AppModule {}

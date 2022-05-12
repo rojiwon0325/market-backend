@@ -16,11 +16,11 @@ export class User {
   @Prop({ required: true, default: () => MUUID.v4() })
   uid: string;
 
-  @IsString()
+  @IsString({ message: '올바른 형식이 아닙니다.' })
   @Prop({ required: true })
   username: string;
 
-  @IsEmail()
+  @IsEmail({}, { message: '이메일 형식이 올바르지 않습니다.' })
   @Prop({ required: true, unique: true })
   email: string;
 
@@ -28,7 +28,8 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @IsString()
+  // 010-0000-0000 형식을 지키도록 IsMatch와 정규표현식을 사용하는 것이 좋을 것 같음
+  @IsString({ message: '올바른 형식이 아닙니다.' })
   @IsOptional()
   @Prop()
   phone?: string;

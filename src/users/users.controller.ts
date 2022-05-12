@@ -1,15 +1,13 @@
-import { ApiInterceptor } from 'src/Interceptors/Api.interceptor';
 import { UsersService } from './users.service';
-import { Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateUserDTO, DeleteUserDTO } from './users.dto';
 
-@UseInterceptors(ApiInterceptor)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async find() {
+  find() {
     return this.usersService.find();
   }
 
