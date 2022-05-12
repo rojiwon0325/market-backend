@@ -35,10 +35,8 @@ export class HttpExceptionService {
     return new HttpException(this.ExceptionMessage[messageKey], status);
   }
 
-  getBadRequestException(
-    messageKey: keyof IExceptionMessage,
-  ): BadRequestException {
-    return new BadRequestException(this.ExceptionMessage[messageKey]);
+  getBadRequestException(message: string): BadRequestException {
+    return new BadRequestException(message);
   }
 
   getNotFoundException(messageKey: keyof IExceptionMessage): NotFoundException {
