@@ -22,6 +22,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate({ uid }: JWTPayloadDTO): Promise<UserEntity> {
-    return this.usersService.findByUid({ uid });
+    return this.usersService.findOne({ uid });
   }
 }

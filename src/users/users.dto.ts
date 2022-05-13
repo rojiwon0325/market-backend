@@ -18,3 +18,7 @@ export class AuthenticateUserDTO extends PickType(UserEntity, ['email']) {
   @Type(() => String)
   password: string;
 }
+
+export type FindOneUserDTO =
+  | Pick<UserEntity, 'uid'>
+  | Pick<UserEntity, 'email'>;
