@@ -7,4 +7,6 @@ export enum ExceptionMessage {
   NOT_DELETED = '데이터가 삭제되지 않았습니다.',
   INCORRECT_PASSWORD = '비밀번호가 일치하지 않습니다.',
   UNEXPECTED = '예기치 못한 오류가 발생했습니다.',
+  UNAUTHORIZED = '로그인이 필요합니다.',
+  FORBIDDEN = '권한이 필요합니다.',
 }

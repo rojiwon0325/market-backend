@@ -6,11 +6,14 @@ import { UsersService } from 'src/users/users.service';
 import { validate } from 'class-validator';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
+import { LoginDTO } from './auth.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
     private readonly httpExceptionService: HttpExceptionService,
   ) {}
 
@@ -24,5 +27,13 @@ export class AuthService {
       throw this.httpExceptionService.getBadRequestException(message);
     }
     return this.usersService.findAuthenticatedUser(data);
+  }
+
+  async signin(user: UserEntity): Promise<LoginDTO> {
+    const payload = { uid: user.uid };
+    return {
+      access_token: this.jwtService.sign(payload),
+      user,
+    };
   }
 }

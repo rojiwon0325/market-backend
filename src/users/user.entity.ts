@@ -1,10 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsEmail, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import { Document } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import * as MUUID from 'uuid-mongodb';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
+
+export enum UserRole {
+  Admin = 'Admin',
+  Customer = 'Customer',
+}
 
 export type UserDocument = UserEntity & Document;
 
@@ -34,6 +39,10 @@ export class UserEntity {
   @IsOptional()
   @Prop()
   phone?: string;
+
+  @IsEnum(UserRole)
+  @Prop({ type: String, enum: UserRole, default: UserRole.Customer })
+  role: UserRole;
 }
 
 export const UserSchemaProvider = {

@@ -1,15 +1,10 @@
 import { plainToInstance } from 'class-transformer';
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { UserDocument, UserEntity } from './user.entity';
-import * as bcrypt from 'bcrypt';
 import { AuthenticateUserDTO } from './users.dto';
-import { ExceptionMessage } from 'src/httpException/exception-message.enum';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersRepository {
@@ -34,14 +29,15 @@ export class UsersRepository {
   async findAuthenticatedUser({
     email,
     password,
-  }: AuthenticateUserDTO): Promise<UserEntity> {
+  }: AuthenticateUserDTO): Promise<UserEntity | false> {
     const user = await this.userModel.findOne({ email });
     if (user) {
       const same = await bcrypt.compare(password, user.password);
-      if (!same)
-        throw new UnauthorizedException(ExceptionMessage.INCORRECT_PASSWORD);
-      return plainToInstance(UserEntity, user.toObject());
-    } else throw new NotFoundException(ExceptionMessage.NOT_FOUND_USER);
+      if (!same) return false;
+      else return plainToInstance(UserEntity, user.toObject());
+    } else {
+      return undefined;
+    }
   }
 
   async create(dto: Partial<UserEntity>): Promise<UserEntity> {
