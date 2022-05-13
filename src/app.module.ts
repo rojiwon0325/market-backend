@@ -21,6 +21,8 @@ import { AuthModule } from './auth/auth.module';
         NODE_ENV: Joi.string().valid('dev', 'prod', 'test').default('dev'),
         PORT: Joi.number().default(3000),
 
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRESIN: Joi.string().required(),
         MONGODB_URL: Joi.string().required(),
       }),
     }),
