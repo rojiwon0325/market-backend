@@ -33,10 +33,10 @@ import { AuthModule } from './auth/auth.module';
       }),
       inject: [ConfigService],
     }),
-    UsersModule,
     CommonModule,
     HttpExceptionModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [],
 })
