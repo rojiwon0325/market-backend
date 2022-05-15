@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { CommonModule } from './common/common.module';
 import { HttpExceptionModule } from './httpException/http-exception.module';
 import { AuthModule } from './auth/auth.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AuthModule } from './auth/auth.module';
     HttpExceptionModule,
     AuthModule,
     UsersModule,
+    ProductsModule,
   ],
   controllers: [],
 })

@@ -9,4 +9,8 @@ export enum ExceptionMessage {
   UNEXPECTED = '예기치 못한 오류가 발생했습니다.',
   UNAUTHORIZED = '로그인이 필요합니다.',
   FORBIDDEN = '권한이 필요합니다.',
+  REQUIRED_PRODUCT_NAME = '상품명이 필요합니다.',
+  REQUIRED_PRODUCT_PRICE = '상품 가격이 필요합니다.',
+  MIN_PRODUCT_PRICE = '상품 가격은 0이상입니다.',
+  REQUIRED_PRODUCT_IMAGE_URL = '상품 이미지 주소가 필요합니다.',
 }
