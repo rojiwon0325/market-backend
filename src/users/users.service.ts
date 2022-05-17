@@ -1,9 +1,5 @@
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserEntity } from './user.entity';
 import {
   AuthenticateUserDTO,
@@ -46,11 +42,15 @@ export class UsersService {
   async findAuthenticatedUser(dto: AuthenticateUserDTO): Promise<UserEntity> {
     const user = await this.usersRepository.findAuthenticatedUser(dto);
     if (user === false) {
-      throw new UnauthorizedException(ExceptionMessage.INCORRECT_PASSWORD);
+      throw this.exceptionService.getUnauthorizedException(
+        ExceptionMessage.INCORRECT_PASSWORD,
+      );
     } else if (user) {
       return user;
     } else {
-      throw new NotFoundException(ExceptionMessage.NOT_FOUND_USER);
+      throw this.exceptionService.getNotFoundException(
+        ExceptionMessage.NOT_FOUND_USER,
+      );
     }
   }
 
