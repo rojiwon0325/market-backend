@@ -16,3 +16,5 @@ export class CreateProductDTO extends PickType(ProductEntity, [
   'name',
   'price',
 ]) {}
+
+export class DeleteProductDTO extends PickType(ProductEntity, ['uid']) {}
