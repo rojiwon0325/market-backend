@@ -6,7 +6,7 @@ import { Type } from 'class-transformer';
 export class ProductSimpleEntitiy extends PickType(ProductEntity, [
   'uid',
   'name',
-  'price',
+  //'price',
   //'image_url',
 ]) {}
 

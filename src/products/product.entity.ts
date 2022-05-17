@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
   IsNumber,
-  IsOptional,
+  // IsOptional,
   IsString,
-  IsUrl,
+  // IsUrl,
   IsUUID,
   Min,
 } from 'class-validator';
-import { Exclude, Type } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { Document } from 'mongoose';
 import * as MUUID from 'uuid-mongodb';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
@@ -20,6 +20,7 @@ export class ProductEntity {
   _id: string;
 
   @IsUUID()
+  @Expose()
   @Prop({ required: true, default: () => MUUID.v4() })
   uid: string;
   /**
@@ -29,11 +30,13 @@ export class ProductEntity {
  */
 
   @IsString({ message: ExceptionMessage.REQUIRED_PRODUCT_NAME })
+  @Expose()
   @Prop({ required: true })
   name: string;
 
   @IsNumber({}, { message: ExceptionMessage.REQUIRED_PRODUCT_PRICE })
   @Min(0, { message: ExceptionMessage.MIN_PRODUCT_PRICE })
+  @Expose()
   @Type(() => Number)
   @Prop({ default: 0 })
   price: number;

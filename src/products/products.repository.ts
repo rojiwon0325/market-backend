@@ -18,7 +18,9 @@ export class ProductsRepository {
   ): Promise<T> {
     const product = await this.productModel.findOne(dto);
     if (product) {
-      return plainToInstance(cls, product.toObject());
+      return plainToInstance(cls, product.toObject(), {
+        strategy: 'excludeAll',
+      });
     } else {
       return undefined;
     }
@@ -30,12 +32,15 @@ export class ProductsRepository {
     const products = (await this.productModel.find()).map((product) =>
       product.toObject(),
     );
-    return plainToInstance(cls, products);
+
+    return plainToInstance(cls, products, { strategy: 'excludeAll' });
   }
 
   async create(dto: Partial<ProductEntity>): Promise<ProductDetailEntity> {
     const product = await this.productModel.create(dto);
-    return plainToInstance(ProductDetailEntity, product.toObject());
+    return plainToInstance(ProductDetailEntity, product.toObject(), {
+      strategy: 'excludeAll',
+    });
   }
 
   async deleteOne(filter: FilterQuery<ProductDocument>) {
