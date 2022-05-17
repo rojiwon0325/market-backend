@@ -22,6 +22,11 @@ export class ProductEntity {
   @IsUUID()
   @Prop({ required: true, default: () => MUUID.v4() })
   uid: string;
+  /**
+  @IsUUID()
+  @Prop({ required: true })
+  category_uid: string;
+ */
 
   @IsString({ message: ExceptionMessage.REQUIRED_PRODUCT_NAME })
   @Prop({ required: true })
@@ -33,6 +38,7 @@ export class ProductEntity {
   @Prop({ default: 0 })
   price: number;
 
+  /**
   @IsUrl({}, { message: ExceptionMessage.REQUIRED_PRODUCT_IMAGE_URL })
   @Prop({ required: true })
   image_url: string;
@@ -41,11 +47,11 @@ export class ProductEntity {
   @IsOptional()
   @Prop({ required: false })
   description?: string; // 짧은 설명
-
   @IsUrl()
   @IsOptional()
   @Prop({ required: false })
   information_url?: string; // 상세 정보
+   */
 }
 
 export const ProductSchemaProvider = {
