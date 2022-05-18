@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { ProductDocument, ProductEntity } from './product.entity';
-import { ProductDetailEntity, ProductSimpleEntitiy } from './products.dto';
+import {
+  CreateProductDTO,
+  FindOneProductDTO,
+  ProductDetailEntity,
+  ProductFilter,
+  ProductSimpleEntitiy,
+} from './products.dto';
 
 @Injectable()
 export class ProductsRepository {
@@ -13,7 +19,7 @@ export class ProductsRepository {
   ) {}
 
   async findOne<T = ProductSimpleEntitiy | ProductDetailEntity>(
-    dto: Partial<ProductEntity>,
+    dto: FindOneProductDTO,
     cls: ClassConstructor<T>,
   ): Promise<T> {
     const product = await this.productModel.findOne(dto);
@@ -36,24 +42,14 @@ export class ProductsRepository {
     return plainToInstance(cls, products, { strategy: 'excludeAll' });
   }
 
-  async findAll<T = ProductSimpleEntitiy | ProductDetailEntity>(
-    cls: ClassConstructor<T>,
-  ) {
-    const products = (await this.productModel.find()).map((product) =>
-      product.toObject(),
-    );
-
-    return plainToInstance(cls, products, { strategy: 'excludeAll' });
-  }
-
-  async create(dto: Partial<ProductEntity>): Promise<ProductDetailEntity> {
+  async create(dto: CreateProductDTO): Promise<ProductDetailEntity> {
     const product = await this.productModel.create(dto);
     return plainToInstance(ProductDetailEntity, product.toObject(), {
       strategy: 'excludeAll',
     });
   }
 
-  async deleteOne(filter: FilterQuery<ProductDocument>) {
+  async deleteOne(filter: ProductFilter) {
     return this.productModel.deleteOne(filter);
   }
 }

@@ -25,6 +25,9 @@ export class UsersController {
     return this.usersService.create(body);
   }
 
+  /**
+   * 자기 자신만 바꿀 수 있다. 로그인 한 정보가 아닌 body정보로 '나'를 인증
+   */
   @Post('delete')
   delete(@Body() body: AuthenticateUserDTO) {
     return this.usersService.delete(body);

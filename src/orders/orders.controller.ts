@@ -1,5 +1,5 @@
-import { CreateOrderBody } from './dtos/order.dto';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { CreateOrderBody, OrderIdParam } from './dtos/order.dto';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Public } from 'src/auth/Public.decorator';
 import { User } from 'src/users/user.decorator';
 import { OrdersService } from './orders.service';
@@ -19,8 +19,16 @@ export class OrdersController {
   }
 
   @Get()
-  findAll(@User() user: UserDetail) {
+  findUserOrders(@User() user: UserDetail) {
     return this.ordersService.findUserOrders({ customer_id: user.uid });
+  }
+
+  @Get(':order_id')
+  findOne(@User() user: UserDetail, @Param() { order_id }: OrderIdParam) {
+    return this.ordersService.findOrder({
+      uid: order_id,
+      customer_id: user.uid,
+    });
   }
 
   /**

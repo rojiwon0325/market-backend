@@ -1,9 +1,9 @@
 import { ClassConstructor } from 'class-transformer';
 import {
   CreateProductDTO,
-  DeleteProductDTO,
   FindOneProductDTO,
   ProductDetailEntity,
+  ProductFilter,
   ProductSimpleEntitiy,
 } from './products.dto';
 import { ProductsRepository } from './products.repository';
@@ -22,7 +22,7 @@ export class ProductsService {
   async findAll<T = ProductSimpleEntitiy | ProductDetailEntity>(
     cls: ClassConstructor<T>,
   ) {
-    return this.productsRepository.findAll(cls);
+    return this.productsRepository.find({}, cls);
   }
 
   async find<T = ProductSimpleEntitiy | ProductDetailEntity>(
@@ -51,10 +51,10 @@ export class ProductsService {
     return product;
   }
 
-  async deleteOne(dto: DeleteProductDTO): Promise<DeleteProductDTO> {
-    const { deletedCount } = await this.productsRepository.deleteOne(dto);
+  async deleteOne(filter: ProductFilter): Promise<ProductFilter> {
+    const { deletedCount } = await this.productsRepository.deleteOne(filter);
     if (deletedCount) {
-      return dto;
+      return filter;
     } else
       throw this.exceptionService.getNotFoundException(
         ExceptionMessage.NOT_DELETED,

@@ -1,4 +1,9 @@
-import { CreateOrderDTO, OrderResponse } from './dtos/order.dto';
+import {
+  CreateOrderDTO,
+  CustomerFilter,
+  OrderFilter,
+  OrderResponse,
+} from './dtos/order.dto';
 import { ProductsService } from './../products/products.service';
 import { Injectable } from '@nestjs/common';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
@@ -17,11 +22,11 @@ export class OrdersService {
   findAll(): Promise<OrderResponse[]> {
     return this.ordersRepository.findOrders({});
   }
-  findUserOrders(dto: { customer_id: string }): Promise<OrderResponse[]> {
+  findUserOrders(dto: CustomerFilter): Promise<OrderResponse[]> {
     return this.ordersRepository.findOrders(dto);
   }
-  async findOrder(dto: { uid: string }): Promise<OrderResponse> {
-    const order = await this.ordersRepository.findOrder(dto);
+  async findOrder(filter: OrderFilter): Promise<OrderResponse> {
+    const order = await this.ordersRepository.findOrder(filter);
     if (order) {
       return order;
     } else {

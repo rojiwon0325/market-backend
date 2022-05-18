@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { OrderResponse } from './dtos/order.dto';
+import { OrderFilter, OrderResponse } from './dtos/order.dto';
 import {
   OrderItemDocument,
   OrderItemEntity,
@@ -34,8 +34,8 @@ export class OrdersRepository {
     return plainToInstance(OrderResponse, result);
   }
 
-  async findOrder(dto: { uid: string }): Promise<OrderResponse> {
-    const order = await this.orderModel.findOne(dto);
+  async findOrder(filter: OrderFilter): Promise<OrderResponse> {
+    const order = await this.orderModel.findOne(filter);
     if (order) {
       const items = await this.orderItemModel.find({ order_id: order.uid });
       const result = {

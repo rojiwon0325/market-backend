@@ -1,7 +1,17 @@
 import { OmitType, PickType } from '@nestjs/swagger';
 import { Type, Exclude } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { IsString, IsUUID } from 'class-validator';
 import { UserEntity, UserRole } from './user.entity';
+
+export class UserIdParam {
+  @IsUUID()
+  user_id: string;
+}
+
+export class UserFilter {
+  @IsUUID()
+  uid: string;
+}
 
 export class CreateUserDTO extends PickType(UserEntity, [
   'username',

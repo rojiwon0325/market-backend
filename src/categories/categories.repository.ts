@@ -18,10 +18,8 @@ export class CategoriesRepository {
     );
     return plainToInstance(CategoryEntity, categories);
   }
-  async findOne(
-    dto: Pick<CategoryEntity, 'uid'> | Pick<CategoryEntity, 'name'>,
-  ): Promise<CategoryEntity> {
-    const category = await this.categoryModel.findOne(dto);
+  async findOne(filter: CategoryDTO | CategoryFilter): Promise<CategoryEntity> {
+    const category = await this.categoryModel.findOne(filter);
     if (category) {
       return plainToInstance(CategoryEntity, category.toObject());
     } else {

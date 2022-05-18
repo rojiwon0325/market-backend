@@ -1,7 +1,7 @@
 import { ProductEntity } from './product.entity';
 import { OmitType, PickType } from '@nestjs/swagger';
 import { IsUUID } from 'class-validator';
-import { Exclude, Type } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 
 export class ProductSimpleEntitiy extends PickType(ProductEntity, [
   'uid',
@@ -28,10 +28,12 @@ export class CreateProductDTO extends PickType(ProductEntity, [
   'price',
 ]) {}
 
-export class DeleteProductDTO extends PickType(ProductEntity, ['uid']) {}
-
-export class ProductIdParamDTO {
+export class ProductIdParam {
   @IsUUID()
-  @Type(() => String)
   product_id: string;
+}
+
+export class ProductFilter {
+  @IsUUID()
+  uid: string;
 }

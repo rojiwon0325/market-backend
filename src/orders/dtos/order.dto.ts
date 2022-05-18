@@ -41,3 +41,21 @@ export class CreateOrderDTO extends CreateOrderBody {
   @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   customer_id: string;
 }
+
+export class OrderIdParam {
+  @IsUUID()
+  order_id: string;
+}
+
+export class CustomerFilter {
+  @IsUUID()
+  customer_id: string;
+}
+
+export class OrderFilter {
+  @IsUUID()
+  uid: string;
+
+  @IsUUID()
+  customer_id: string;
+}

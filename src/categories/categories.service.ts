@@ -16,8 +16,8 @@ export class CategoriesService {
     return this.categoriesRepository.find();
   }
 
-  async findOne(dto: CategoryFilter): Promise<CategoryEntity> {
-    const category = await this.categoriesRepository.findOne(dto);
+  async findOne(filter: CategoryFilter): Promise<CategoryEntity> {
+    const category = await this.categoriesRepository.findOne(filter);
     if (category) {
       return category;
     } else {
@@ -59,7 +59,7 @@ export class CategoriesService {
 
   async deleteOne(filter: CategoryFilter): Promise<CategoryFilter> {
     const { deletedCount } = await this.categoriesRepository.deleteOne(filter);
-    if (deletedCount > 0) {
+    if (deletedCount) {
       return filter;
     } else {
       throw this.exceptionService.getNotFoundException(

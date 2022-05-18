@@ -1,8 +1,8 @@
 import {
   CreateProductDTO,
-  DeleteProductDTO,
   ProductDetailEntity,
-  ProductIdParamDTO,
+  ProductFilter,
+  ProductIdParam,
   ProductSimpleEntitiy,
 } from './products.dto';
 import { ProductsService } from './products.service';
@@ -22,7 +22,7 @@ export class ProductsController {
   @Public()
   @Get(':product_id')
   findOne(
-    @Param() { product_id }: ProductIdParamDTO,
+    @Param() { product_id }: ProductIdParam,
   ): Promise<ProductDetailEntity> {
     return this.productsService.findOne(
       { uid: product_id },
@@ -35,8 +35,8 @@ export class ProductsController {
     return this.productsService.create(body);
   }
 
-  @Post('delete')
-  delete(@Body() body: DeleteProductDTO): Promise<DeleteProductDTO> {
-    return this.productsService.deleteOne(body);
+  @Post(':product_id/delete')
+  delete(@Param() { product_id }: ProductIdParam): Promise<ProductFilter> {
+    return this.productsService.deleteOne({ uid: product_id });
   }
 }
