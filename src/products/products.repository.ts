@@ -5,7 +5,6 @@ import { Model } from 'mongoose';
 import { ProductDocument, ProductEntity } from './product.entity';
 import {
   CreateProductDTO,
-  FindOneProductDTO,
   ProductDetailEntity,
   ProductFilter,
   ProductSimpleEntitiy,
@@ -19,10 +18,10 @@ export class ProductsRepository {
   ) {}
 
   async findOne<T = ProductSimpleEntitiy | ProductDetailEntity>(
-    dto: FindOneProductDTO,
+    filter: ProductFilter,
     cls: ClassConstructor<T>,
   ): Promise<T> {
-    const product = await this.productModel.findOne(dto);
+    const product = await this.productModel.findOne(filter);
     if (product) {
       return plainToInstance(cls, product.toObject(), {
         strategy: 'excludeAll',

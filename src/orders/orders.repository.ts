@@ -31,7 +31,7 @@ export class OrdersRepository {
         items: items.map((item) => item.toObject()),
       });
     }
-    return plainToInstance(OrderResponse, result);
+    return plainToInstance(OrderResponse, result, { strategy: 'excludeAll' });
   }
 
   async findOrder(filter: OrderFilter): Promise<OrderResponse> {
@@ -42,7 +42,7 @@ export class OrdersRepository {
         ...order.toObject(),
         items: items.map((item) => item.toObject()),
       };
-      return plainToInstance(OrderResponse, result);
+      return plainToInstance(OrderResponse, result, { strategy: 'excludeAll' });
     } else {
       return undefined;
     }
@@ -75,6 +75,6 @@ export class OrdersRepository {
     }
     await this.orderModel.updateOne({ uid: order.uid }, { total_price });
     const result = { ...order.toObject(), total_price, items: orderItems };
-    return plainToInstance(OrderResponse, result);
+    return plainToInstance(OrderResponse, result, { strategy: 'excludeAll' });
   }
 }

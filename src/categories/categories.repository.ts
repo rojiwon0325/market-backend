@@ -16,19 +16,25 @@ export class CategoriesRepository {
     const categories = (await this.categoryModel.find()).map((category) =>
       category.toObject(),
     );
-    return plainToInstance(CategoryEntity, categories);
+    return plainToInstance(CategoryEntity, categories, {
+      strategy: 'excludeAll',
+    });
   }
   async findOne(filter: CategoryDTO | CategoryFilter): Promise<CategoryEntity> {
     const category = await this.categoryModel.findOne(filter);
     if (category) {
-      return plainToInstance(CategoryEntity, category.toObject());
+      return plainToInstance(CategoryEntity, category.toObject(), {
+        strategy: 'excludeAll',
+      });
     } else {
       return undefined;
     }
   }
   async create(dto: CategoryDTO): Promise<CategoryEntity> {
     const category = await this.categoryModel.create(dto);
-    return plainToInstance(CategoryEntity, category.toObject());
+    return plainToInstance(CategoryEntity, category.toObject(), {
+      strategy: 'excludeAll',
+    });
   }
   async updateOne(
     filter: CategoryFilter,
@@ -37,10 +43,14 @@ export class CategoriesRepository {
     const category = await this.categoryModel.findOne(filter);
     if (category) {
       await this.categoryModel.updateOne(filter, dto);
-      return plainToInstance(CategoryEntity, {
-        ...category.toObject(),
-        ...dto,
-      });
+      return plainToInstance(
+        CategoryEntity,
+        {
+          ...category.toObject(),
+          ...dto,
+        },
+        { strategy: 'excludeAll' },
+      );
     } else {
       return undefined;
     }

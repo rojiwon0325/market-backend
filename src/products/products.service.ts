@@ -1,7 +1,6 @@
 import { ClassConstructor } from 'class-transformer';
 import {
   CreateProductDTO,
-  FindOneProductDTO,
   ProductDetailEntity,
   ProductFilter,
   ProductSimpleEntitiy,
@@ -33,10 +32,10 @@ export class ProductsService {
   }
 
   async findOne<T = ProductDetailEntity | ProductSimpleEntitiy>(
-    dto: FindOneProductDTO,
+    filter: ProductFilter,
     cls: ClassConstructor<T>,
   ): Promise<T> {
-    const product = await this.productsRepository.findOne(dto, cls);
+    const product = await this.productsRepository.findOne(filter, cls);
     if (product) {
       return product;
     } else {

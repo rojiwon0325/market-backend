@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
   IsNumber,
-  // IsOptional,
+  IsOptional,
   IsString,
   // IsUrl,
   IsUUID,
@@ -41,15 +41,16 @@ export class ProductEntity {
   @Prop({ default: 0 })
   price: number;
 
+  @IsString({ message: ExceptionMessage.VALIDATION })
+  @IsOptional()
+  @Expose()
+  @Prop({ required: false })
+  description?: string; // 짧은 설명
+
   /**
   @IsUrl({}, { message: ExceptionMessage.REQUIRED_PRODUCT_IMAGE_URL })
   @Prop({ required: true })
   image_url: string;
-
-  @IsString()
-  @IsOptional()
-  @Prop({ required: false })
-  description?: string; // 짧은 설명
   @IsUrl()
   @IsOptional()
   @Prop({ required: false })

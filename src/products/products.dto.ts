@@ -22,8 +22,6 @@ export class ProductDetailEntity extends OmitType(ProductEntity, [
   category_id: string;
 }
 
-export class FindOneProductDTO extends PickType(ProductEntity, ['uid']) {}
-
 export class CreateProductDTO extends PickType(ProductEntity, [
   'category_id',
   'name',

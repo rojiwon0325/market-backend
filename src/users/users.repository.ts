@@ -19,7 +19,7 @@ export class UsersRepository {
 
   async findAll(): Promise<UserPublic[]> {
     const users = (await this.userModel.find()).map((user) => user.toObject());
-    return plainToInstance(UserPublic, users);
+    return plainToInstance(UserPublic, users, { strategy: 'excludeAll' });
   }
 
   async findOne<T = UserEntity | UserPublic | UserDetail>(
@@ -28,7 +28,7 @@ export class UsersRepository {
   ): Promise<T> {
     const user = await this.userModel.findOne(dto);
     if (user) {
-      return plainToInstance(cls, user.toObject());
+      return plainToInstance(cls, user.toObject(), { strategy: 'excludeAll' });
     } else {
       return undefined;
     }
@@ -42,7 +42,10 @@ export class UsersRepository {
     if (user) {
       const same = await bcrypt.compare(password, user.password);
       if (!same) return false;
-      else return plainToInstance(UserDetail, user.toObject());
+      else
+        return plainToInstance(UserDetail, user.toObject(), {
+          strategy: 'excludeAll',
+        });
     } else {
       return undefined;
     }
@@ -50,7 +53,9 @@ export class UsersRepository {
 
   async create(dto: Partial<UserEntity>): Promise<UserEntity> {
     const user = await this.userModel.create(dto);
-    return plainToInstance(UserEntity, user.toObject());
+    return plainToInstance(UserEntity, user.toObject(), {
+      strategy: 'excludeAll',
+    });
   }
 
   async deleteOne(filter: UserFilter) {

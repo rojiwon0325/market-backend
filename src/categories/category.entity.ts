@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Type } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import * as MUUID from 'uuid-mongodb';
 import { IsString, IsUUID } from 'class-validator';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
@@ -12,10 +12,12 @@ export class CategoryEntity {
   _id: string;
 
   @IsUUID(4, { message: ExceptionMessage.VALIDATION })
+  @Expose()
   @Prop({ required: true, default: () => MUUID.v4() })
   uid: string;
 
   @IsString({ message: ExceptionMessage.VALIDATION })
+  @Expose()
   @Type(() => String)
   @Prop({ required: true, unique: true })
   name: string;
