@@ -5,9 +5,12 @@ import {
   AuthenticateUserDTO,
   CreateUserDTO,
   FindOneUserDTO,
+  UserDetail,
+  UserPublic,
 } from './users.dto';
 import { UsersRepository } from './users.repository';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
+import { ClassConstructor } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -21,7 +24,10 @@ export class UsersService {
   }
 
   async create(dto: CreateUserDTO): Promise<UserEntity> {
-    const exist = await this.usersRepository.findOne({ email: dto.email });
+    const exist = await this.usersRepository.findOne(
+      { email: dto.email },
+      UserPublic,
+    );
     if (exist)
       throw this.exceptionService.getBadRequestException(
         ExceptionMessage.USED_EMAIL,
@@ -29,9 +35,13 @@ export class UsersService {
     return this.usersRepository.create(dto);
   }
 
-  async findOne(dto: FindOneUserDTO): Promise<UserEntity> {
+  async findOne<T = UserEntity | UserPublic | UserDetail>(
+    dto: FindOneUserDTO,
+    cls: ClassConstructor<T>,
+  ): Promise<T> {
+    cls;
     const filter = 'uid' in dto ? { uid: dto.uid } : { email: dto.email };
-    const user = await this.usersRepository.findOne(filter);
+    const user = await this.usersRepository.findOne(filter, cls);
     if (user) {
       return user;
     } else

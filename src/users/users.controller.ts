@@ -1,8 +1,8 @@
 import { UsersService } from './users.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { AuthenticateUserDTO, CreateUserDTO } from './users.dto';
+import { AuthenticateUserDTO, CreateUserDTO, UserDetail } from './users.dto';
 import { User } from './user.decorator';
-import { UserEntity, UserRole } from './user.entity';
+import { UserRole } from './user.entity';
 import { Roles } from './roles.decorator';
 
 @Controller('users')
@@ -16,7 +16,7 @@ export class UsersController {
   }
 
   @Get('profile')
-  profile(@User() user: UserEntity) {
+  profile(@User() user: UserDetail) {
     return user;
   }
 

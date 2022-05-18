@@ -7,7 +7,7 @@ import {
   IsUUID,
   Min,
 } from 'class-validator';
-import { Exclude, Expose, Type } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { Document } from 'mongoose';
 import * as MUUID from 'uuid-mongodb';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
@@ -16,7 +16,7 @@ export type ProductDocument = ProductEntity & Document;
 
 @Schema()
 export class ProductEntity {
-  @Exclude()
+  @Expose()
   _id: string;
 
   @IsUUID()

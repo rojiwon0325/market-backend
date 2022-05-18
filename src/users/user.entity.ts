@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { Document } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import * as MUUID from 'uuid-mongodb';
@@ -15,18 +15,21 @@ export type UserDocument = UserEntity & Document;
 
 @Schema()
 export class UserEntity {
-  @Exclude()
+  @Expose()
   _id: string;
 
   @IsUUID()
+  @Expose()
   @Prop({ required: true, default: () => MUUID.v4() })
   uid: string;
 
   @IsString({ message: ExceptionMessage.VALIDATION })
+  @Expose()
   @Prop({ required: true })
   username: string;
 
   @IsEmail({}, { message: ExceptionMessage.VALIDATION_EMAIL })
+  @Expose()
   @Prop({ required: true, unique: true })
   email: string;
 
@@ -36,11 +39,13 @@ export class UserEntity {
 
   // 010-0000-0000 형식을 지키도록 IsMatch와 정규표현식을 사용하는 것이 좋을 것 같음
   @IsString({ message: ExceptionMessage.VALIDATION })
+  @Expose()
   @IsOptional()
   @Prop()
   phone?: string;
 
   @IsEnum(UserRole)
+  @Expose()
   @Prop({ type: String, enum: UserRole, default: UserRole.Customer })
   role: UserRole;
 }

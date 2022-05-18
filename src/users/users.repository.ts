@@ -1,9 +1,9 @@
-import { plainToInstance } from 'class-transformer';
+import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { UserDocument, UserEntity } from './user.entity';
-import { AuthenticateUserDTO } from './users.dto';
+import { AuthenticateUserDTO, UserDetail, UserPublic } from './users.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -12,15 +12,18 @@ export class UsersRepository {
     @InjectModel(UserEntity.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async findAll(): Promise<UserEntity[]> {
+  async findAll(): Promise<UserPublic[]> {
     const users = (await this.userModel.find()).map((user) => user.toObject());
-    return plainToInstance(UserEntity, users);
+    return plainToInstance(UserPublic, users);
   }
 
-  async findOne(dto: Partial<UserEntity>): Promise<UserEntity> {
+  async findOne<T = UserEntity | UserPublic | UserDetail>(
+    dto: Partial<UserEntity>,
+    cls: ClassConstructor<T>,
+  ): Promise<T> {
     const user = await this.userModel.findOne(dto);
     if (user) {
-      return plainToInstance(UserEntity, user.toObject());
+      return plainToInstance(cls, user.toObject());
     } else {
       return undefined;
     }
@@ -29,12 +32,12 @@ export class UsersRepository {
   async findAuthenticatedUser({
     email,
     password,
-  }: AuthenticateUserDTO): Promise<UserEntity | false> {
+  }: AuthenticateUserDTO): Promise<UserDetail | false> {
     const user = await this.userModel.findOne({ email });
     if (user) {
       const same = await bcrypt.compare(password, user.password);
       if (!same) return false;
-      else return plainToInstance(UserEntity, user.toObject());
+      else return plainToInstance(UserDetail, user.toObject());
     } else {
       return undefined;
     }
