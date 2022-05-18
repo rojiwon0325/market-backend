@@ -4,10 +4,11 @@ import {
   ProductFilter,
   ProductIdParam,
   ProductSimpleEntitiy,
+  SearchQuery,
   UpdateProductDTO,
 } from './products.dto';
 import { ProductsService } from './products.service';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { Public } from 'src/auth/Public.decorator';
 
 @Public()
@@ -15,13 +16,16 @@ import { Public } from 'src/auth/Public.decorator';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Public()
   @Get()
   find(): Promise<ProductSimpleEntitiy[]> {
     return this.productsService.findAll(ProductSimpleEntitiy);
   }
 
-  @Public()
+  @Get('search')
+  search(@Query() { keyword }: SearchQuery): Promise<ProductSimpleEntitiy[]> {
+    return this.productsService.search(keyword);
+  }
+
   @Get(':product_id')
   findOne(
     @Param() { product_id }: ProductIdParam,

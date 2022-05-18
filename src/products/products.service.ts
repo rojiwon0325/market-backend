@@ -32,6 +32,10 @@ export class ProductsService {
     return this.productsRepository.find(filter, cls);
   }
 
+  async search(search: string): Promise<ProductSimpleEntitiy[]> {
+    return this.productsRepository.search(search);
+  }
+
   async findOne<T = ProductDetailEntity | ProductSimpleEntitiy>(
     filter: ProductFilter,
     cls: ClassConstructor<T>,

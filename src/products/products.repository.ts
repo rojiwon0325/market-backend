@@ -42,6 +42,19 @@ export class ProductsRepository {
     return plainToInstance(cls, products, { strategy: 'excludeAll' });
   }
 
+  async search(search: string): Promise<ProductSimpleEntitiy[]> {
+    const products = (
+      await this.productModel.find({
+        name: {
+          $regex: new RegExp(`\\b${search.split(' ').join('|')}\\b`, 'ig'),
+        },
+      })
+    ).map((product) => product.toObject());
+    return plainToInstance(ProductSimpleEntitiy, products, {
+      strategy: 'excludeAll',
+    });
+  }
+
   async create(dto: CreateProductDTO): Promise<ProductDetailEntity> {
     const product = await this.productModel.create(dto);
     return plainToInstance(ProductDetailEntity, product.toObject(), {

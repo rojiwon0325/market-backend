@@ -57,3 +57,9 @@ export class ProductFilter {
   @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   uid: string;
 }
+
+export class SearchQuery {
+  @IsString()
+  @Type(() => String)
+  keyword: string;
+}
