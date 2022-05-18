@@ -33,7 +33,7 @@ export class CategoriesController {
 
   @Post(':category_id/update')
   update(@Param() { category_id }: CategoryIdParam, @Body() body: CategoryDTO) {
-    return this.categoriesService.update({ uid: category_id }, body);
+    return this.categoriesService.updateOne({ uid: category_id }, body);
   }
 
   @Post(':category_id/delete')

@@ -1,7 +1,7 @@
 import { ProductEntity } from './product.entity';
 import { OmitType, PickType } from '@nestjs/swagger';
-import { IsUUID } from 'class-validator';
-import { Exclude } from 'class-transformer';
+import { IsInt, IsOptional, IsString, IsUUID } from 'class-validator';
+import { Exclude, Type } from 'class-transformer';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 
 export class ProductSimpleEntitiy extends PickType(ProductEntity, [
@@ -27,6 +27,26 @@ export class CreateProductDTO extends PickType(ProductEntity, [
   'name',
   'price',
 ]) {}
+
+export class UpdateProductDTO {
+  @IsInt()
+  @IsOptional()
+  @Type(() => Number)
+  price?: number;
+
+  @IsString()
+  @IsOptional()
+  @Type(() => String)
+  name?: string;
+
+  @IsUUID()
+  @IsOptional()
+  category_id?: string;
+
+  @IsString()
+  @IsOptional()
+  description?: string;
+}
 
 export class ProductIdParam {
   @IsUUID(4, { message: ExceptionMessage.VALIDATION })

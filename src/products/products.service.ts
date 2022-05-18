@@ -4,6 +4,7 @@ import {
   ProductDetailEntity,
   ProductFilter,
   ProductSimpleEntitiy,
+  UpdateProductDTO,
 } from './products.dto';
 import { ProductsRepository } from './products.repository';
 import { Injectable } from '@nestjs/common';
@@ -48,6 +49,20 @@ export class ProductsService {
   async create(dto: CreateProductDTO): Promise<ProductDetailEntity> {
     const product = await this.productsRepository.create(dto);
     return product;
+  }
+
+  async updateOne(
+    filter: ProductFilter,
+    dto: UpdateProductDTO,
+  ): Promise<ProductEntity> {
+    const product = await this.productsRepository.updateOne(filter, dto);
+    if (product) {
+      return product;
+    } else {
+      throw this.exceptionService.getNotFoundException(
+        ExceptionMessage.NOT_FOUND_PRODUCT,
+      );
+    }
   }
 
   async deleteOne(filter: ProductFilter): Promise<ProductFilter> {

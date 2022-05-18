@@ -38,22 +38,24 @@ export class CategoriesService {
     }
   }
 
-  async update(
+  async updateOne(
     filter: CategoryFilter,
     dto: CategoryDTO,
   ): Promise<CategoryEntity> {
-    const category = await this.categoriesRepository.findOne(filter);
     const exist = await this.categoriesRepository.findOne(dto);
     if (exist) {
       throw this.exceptionService.getBadRequestException(
         ExceptionMessage.USED_NAME,
       );
-    } else if (category) {
-      return this.categoriesRepository.updateOne(filter, dto);
     } else {
-      throw this.exceptionService.getNotFoundException(
-        ExceptionMessage.NOT_FOUND,
-      );
+      const category = await this.categoriesRepository.updateOne(filter, dto);
+      if (category) {
+        return category;
+      } else {
+        throw this.exceptionService.getNotFoundException(
+          ExceptionMessage.NOT_FOUND,
+        );
+      }
     }
   }
 

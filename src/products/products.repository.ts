@@ -8,6 +8,7 @@ import {
   ProductDetailEntity,
   ProductFilter,
   ProductSimpleEntitiy,
+  UpdateProductDTO,
 } from './products.dto';
 
 @Injectable()
@@ -46,6 +47,26 @@ export class ProductsRepository {
     return plainToInstance(ProductDetailEntity, product.toObject(), {
       strategy: 'excludeAll',
     });
+  }
+
+  async updateOne(
+    filter: ProductFilter,
+    dto: UpdateProductDTO,
+  ): Promise<ProductEntity> {
+    const category = await this.productModel.findOne(filter);
+    if (category) {
+      await this.productModel.updateOne(filter, dto);
+      return plainToInstance(
+        ProductEntity,
+        {
+          ...category.toObject(),
+          ...dto,
+        },
+        { strategy: 'excludeAll' },
+      );
+    } else {
+      return undefined;
+    }
   }
 
   async deleteOne(filter: ProductFilter) {

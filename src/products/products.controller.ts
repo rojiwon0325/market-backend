@@ -4,6 +4,7 @@ import {
   ProductFilter,
   ProductIdParam,
   ProductSimpleEntitiy,
+  UpdateProductDTO,
 } from './products.dto';
 import { ProductsService } from './products.service';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
@@ -34,6 +35,14 @@ export class ProductsController {
   @Post('create')
   create(@Body() body: CreateProductDTO): Promise<ProductDetailEntity> {
     return this.productsService.create(body);
+  }
+
+  @Post(':product_id/update')
+  update(
+    @Param() { product_id }: ProductIdParam,
+    @Body() body: UpdateProductDTO,
+  ) {
+    return this.productsService.updateOne({ uid: product_id }, body);
   }
 
   @Post(':product_id/delete')
