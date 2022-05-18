@@ -1,15 +1,16 @@
 import { OmitType, PickType } from '@nestjs/swagger';
 import { Type, Exclude } from 'class-transformer';
 import { IsString, IsUUID } from 'class-validator';
+import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { UserEntity, UserRole } from './user.entity';
 
 export class UserIdParam {
-  @IsUUID()
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   user_id: string;
 }
 
 export class UserFilter {
-  @IsUUID()
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   uid: string;
 }
 
@@ -18,13 +19,13 @@ export class CreateUserDTO extends PickType(UserEntity, [
   'email',
   'phone',
 ] as const) {
-  @IsString()
+  @IsString({ message: ExceptionMessage.VALIDATION })
   @Type(() => String)
   password: string;
 }
 
 export class AuthenticateUserDTO extends PickType(UserEntity, ['email']) {
-  @IsString()
+  @IsString({ message: ExceptionMessage.VALIDATION })
   @Type(() => String)
   password: string;
 }

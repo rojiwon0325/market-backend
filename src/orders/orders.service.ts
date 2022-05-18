@@ -50,7 +50,6 @@ export class OrdersService {
         count: item.count,
       });
     }
-
     const order = await this.ordersRepository.createOrder({
       customer_id: dto.customer_id,
       items,

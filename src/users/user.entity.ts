@@ -18,7 +18,7 @@ export class UserEntity {
   @Expose()
   _id: string;
 
-  @IsUUID()
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   @Expose()
   @Prop({ required: true, default: () => MUUID.v4() })
   uid: string;
@@ -44,7 +44,7 @@ export class UserEntity {
   @Prop()
   phone?: string;
 
-  @IsEnum(UserRole)
+  @IsEnum(UserRole, { message: ExceptionMessage.VALIDATION })
   @Expose()
   @Prop({ type: String, enum: UserRole, default: UserRole.Customer })
   role: UserRole;

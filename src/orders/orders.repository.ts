@@ -75,7 +75,6 @@ export class OrdersRepository {
     }
     await this.orderModel.updateOne({ uid: order.uid }, { total_price });
     const result = { ...order.toObject(), total_price, items: orderItems };
-    console.log(result);
     return plainToInstance(OrderResponse, result);
   }
 }

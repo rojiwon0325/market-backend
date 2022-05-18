@@ -12,7 +12,7 @@ export class OrderItemEntity {
   @Exclude()
   _id: string;
 
-  @IsUUID()
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   @Expose()
   @Prop({ required: true, default: () => MUUID.v4() })
   uid: string;
@@ -27,7 +27,7 @@ export class OrderItemEntity {
   @Prop({ required: true })
   product_id: string;
 
-  @IsString()
+  @IsString({ message: ExceptionMessage.VALIDATION })
   @Expose()
   @Prop({ required: true })
   product_name: string;

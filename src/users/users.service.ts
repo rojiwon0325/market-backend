@@ -36,11 +36,9 @@ export class UsersService {
   }
 
   async findOne<T = UserEntity | UserPublic | UserDetail>(
-    dto: FindOneUserDTO,
+    filter: FindOneUserDTO,
     cls: ClassConstructor<T>,
   ): Promise<T> {
-    cls;
-    const filter = 'uid' in dto ? { uid: dto.uid } : { email: dto.email };
     const user = await this.usersRepository.findOne(filter, cls);
     if (user) {
       return user;
@@ -66,7 +64,9 @@ export class UsersService {
 
   async delete({ email, password }: AuthenticateUserDTO): Promise<UserEntity> {
     const user = await this.findAuthenticatedUser({ email, password });
-    const { deletedCount } = await this.usersRepository.deleteOne({ email });
+    const { deletedCount } = await this.usersRepository.deleteOne({
+      uid: user.uid,
+    });
     if (deletedCount) {
       return user;
     } else

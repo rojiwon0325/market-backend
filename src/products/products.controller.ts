@@ -9,6 +9,7 @@ import { ProductsService } from './products.service';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Public } from 'src/auth/Public.decorator';
 
+@Public()
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

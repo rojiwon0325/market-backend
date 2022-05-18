@@ -19,12 +19,12 @@ export class ProductEntity {
   @Expose()
   _id: string;
 
-  @IsUUID()
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   @Expose()
   @Prop({ required: true, default: () => MUUID.v4() })
   uid: string;
 
-  @IsUUID()
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   @Expose()
   @Prop({ required: true })
   category_id: string;

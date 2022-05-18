@@ -11,28 +11,28 @@ export class OrderResponse extends OmitType(OrderEntity, ['_id']) {
   _id: string;
 
   @IsOptional()
-  @ValidateNested()
+  @ValidateNested({ message: ExceptionMessage.VALIDATION })
   @Type(() => UserPublic)
   @Expose()
   customer?: UserPublic;
 
-  @ValidateNested({ each: true })
+  @ValidateNested({ each: true, message: ExceptionMessage.VALIDATION })
   @Type(() => OrderItemEntity)
   @Expose()
   items: OrderItemEntity[];
 }
 
 class CreateOrderItem {
-  @IsUUID()
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   uid: string;
 
-  @IsInt()
+  @IsInt({ message: ExceptionMessage.VALIDATION })
   @Type(() => Number)
   count: number;
 }
 
 export class CreateOrderBody {
-  @ValidateNested({ each: true })
+  @ValidateNested({ each: true, message: ExceptionMessage.VALIDATION })
   @Type(() => CreateOrderItem)
   items: CreateOrderItem[];
 }
@@ -43,19 +43,18 @@ export class CreateOrderDTO extends CreateOrderBody {
 }
 
 export class OrderIdParam {
-  @IsUUID()
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   order_id: string;
 }
 
 export class CustomerFilter {
-  @IsUUID()
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   customer_id: string;
 }
 
 export class OrderFilter {
-  @IsUUID()
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   uid: string;
-
-  @IsUUID()
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   customer_id: string;
 }

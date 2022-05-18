@@ -15,7 +15,7 @@ export class CategoryEntity {
   @Prop({ required: true, default: () => MUUID.v4() })
   uid: string;
 
-  @IsString()
+  @IsString({ message: ExceptionMessage.VALIDATION })
   @Type(() => String)
   @Prop({ required: true, unique: true })
   name: string;

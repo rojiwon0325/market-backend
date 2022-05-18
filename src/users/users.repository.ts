@@ -1,9 +1,14 @@
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { UserDocument, UserEntity } from './user.entity';
-import { AuthenticateUserDTO, UserDetail, UserPublic } from './users.dto';
+import {
+  AuthenticateUserDTO,
+  UserDetail,
+  UserFilter,
+  UserPublic,
+} from './users.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -48,7 +53,7 @@ export class UsersRepository {
     return plainToInstance(UserEntity, user.toObject());
   }
 
-  async deleteOne(filter: FilterQuery<UserDocument>) {
+  async deleteOne(filter: UserFilter) {
     return this.userModel.deleteOne(filter);
   }
 }
