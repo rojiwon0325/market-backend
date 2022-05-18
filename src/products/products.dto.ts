@@ -10,9 +10,15 @@ export class ProductSimpleEntitiy extends PickType(ProductEntity, [
   //'image_url',
 ]) {}
 
-export class ProductDetailEntity extends OmitType(ProductEntity, ['_id']) {
+export class ProductDetailEntity extends OmitType(ProductEntity, [
+  '_id',
+  'category_id',
+]) {
   @Exclude()
   _id: string;
+
+  @Exclude()
+  category_id: string;
 }
 
 export class FindOneProductDTO extends PickType(ProductEntity, ['uid']) {}

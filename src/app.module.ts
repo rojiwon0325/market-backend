@@ -8,6 +8,7 @@ import { HttpExceptionModule } from './httpException/http-exception.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -41,7 +42,7 @@ import { OrdersModule } from './orders/orders.module';
     UsersModule,
     ProductsModule,
     OrdersModule,
+    CategoriesModule,
   ],
-  controllers: [],
 })
 export class AppModule {}

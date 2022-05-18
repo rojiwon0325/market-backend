@@ -37,6 +37,6 @@ export class ProductsController {
 
   @Post('delete')
   delete(@Body() body: DeleteProductDTO): Promise<DeleteProductDTO> {
-    return this.productsService.delete(body);
+    return this.productsService.deleteOne(body);
   }
 }

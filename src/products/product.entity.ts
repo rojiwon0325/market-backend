@@ -23,11 +23,11 @@ export class ProductEntity {
   @Expose()
   @Prop({ required: true, default: () => MUUID.v4() })
   uid: string;
-  /**
+
   @IsUUID()
+  @Expose()
   @Prop({ required: true })
-  category_uid: string;
- */
+  category_id: string;
 
   @IsString({ message: ExceptionMessage.REQUIRED_PRODUCT_NAME })
   @Expose()

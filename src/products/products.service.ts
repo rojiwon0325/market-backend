@@ -10,6 +10,7 @@ import { ProductsRepository } from './products.repository';
 import { Injectable } from '@nestjs/common';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
+import { ProductEntity } from './product.entity';
 
 @Injectable()
 export class ProductsService {
@@ -22,6 +23,13 @@ export class ProductsService {
     cls: ClassConstructor<T>,
   ) {
     return this.productsRepository.findAll(cls);
+  }
+
+  async find<T = ProductSimpleEntitiy | ProductDetailEntity>(
+    filter: Partial<ProductEntity>,
+    cls: ClassConstructor<T>,
+  ) {
+    return this.productsRepository.find(filter, cls);
   }
 
   async findOne<T = ProductDetailEntity | ProductSimpleEntitiy>(
@@ -43,7 +51,7 @@ export class ProductsService {
     return product;
   }
 
-  async delete(dto: DeleteProductDTO): Promise<DeleteProductDTO> {
+  async deleteOne(dto: DeleteProductDTO): Promise<DeleteProductDTO> {
     const { deletedCount } = await this.productsRepository.deleteOne(dto);
     if (deletedCount) {
       return dto;

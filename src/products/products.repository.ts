@@ -26,6 +26,16 @@ export class ProductsRepository {
     }
   }
 
+  async find<T = ProductSimpleEntitiy | ProductDetailEntity>(
+    filter: Partial<ProductEntity>,
+    cls: ClassConstructor<T>,
+  ): Promise<T[]> {
+    const products = (await this.productModel.find(filter)).map((product) =>
+      product.toObject(),
+    );
+    return plainToInstance(cls, products, { strategy: 'excludeAll' });
+  }
+
   async findAll<T = ProductSimpleEntitiy | ProductDetailEntity>(
     cls: ClassConstructor<T>,
   ) {
