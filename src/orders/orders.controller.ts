@@ -47,4 +47,12 @@ export class OrdersController {
     order.customer = user;
     return order;
   }
+
+  @Post(':order_id/delete')
+  async delete(
+    @User() { uid }: UserDetail,
+    @Param() { order_id }: OrderIdParam,
+  ) {
+    return this.ordersService.deleteOrder({ customer_id: uid, uid: order_id });
+  }
 }

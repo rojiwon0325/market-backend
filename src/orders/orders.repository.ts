@@ -77,4 +77,14 @@ export class OrdersRepository {
     const result = { ...order.toObject(), total_price, items: orderItems };
     return plainToInstance(OrderResponse, result, { strategy: 'excludeAll' });
   }
+
+  async deleteOrder(filter: OrderFilter) {
+    const result = await this.orderItemModel.deleteOne(filter);
+    if (result.deletedCount) {
+      await this.orderItemModel.deleteMany({ order_id: filter.uid });
+      return result;
+    } else {
+      return result;
+    }
+  }
 }

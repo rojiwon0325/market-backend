@@ -57,4 +57,15 @@ export class OrdersService {
 
     return order;
   }
+
+  async deleteOrder(filter: OrderFilter) {
+    const { deletedCount } = await this.ordersRepository.deleteOrder(filter);
+    if (deletedCount) {
+      return filter;
+    } else {
+      throw this.exceptionService.getNotFoundException(
+        ExceptionMessage.NOT_FOUND,
+      );
+    }
+  }
 }
