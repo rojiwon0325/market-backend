@@ -28,7 +28,7 @@ export class UploadService {
   // AOP패턴이 적용되지 않았다. 예외 로그, 예외처리, 파일 업로드 작업을 모두 진행하고 있다.
   async upload({ type, filename, file }: UploadFileDTO): Promise<string> {
     try {
-      const Key = `${type}/${filename}`;
+      const Key = `${type}/${filename}-${Date.now()}`;
       await this.s3.putObject({
         Bucket: this.bucket,
         Key,
@@ -45,10 +45,11 @@ export class UploadService {
     }
   }
 
-  async delete({ type, filename }: DeleteFileDTO) {
+  async delete({ file_url }: DeleteFileDTO) {
+    const Key = file_url.split('.amazonaws.com/')[1];
     return this.s3.deleteObject({
       Bucket: this.bucket,
-      Key: `${type}/${filename}`,
+      Key,
     });
   }
 }

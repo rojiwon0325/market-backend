@@ -1,5 +1,4 @@
-import { Expose, Type } from 'class-transformer';
-import { IsString, IsEnum } from 'class-validator';
+import { IsUrl } from 'class-validator';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 
 export enum UploadType {
@@ -14,12 +13,6 @@ export class UploadFileDTO {
 }
 
 export class DeleteFileDTO {
-  @IsEnum(UploadType, { message: ExceptionMessage.VALIDATION })
-  @Expose()
-  type: UploadType;
-
-  @IsString({ message: ExceptionMessage.VALIDATION })
-  @Type(() => String)
-  @Expose()
-  filename: string;
+  @IsUrl({ message: ExceptionMessage.VALIDATION })
+  file_url: string;
 }

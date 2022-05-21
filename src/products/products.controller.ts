@@ -85,13 +85,16 @@ export class ProductsController {
       ProductDetailEntity,
     );
     if (file) {
-      // 이름이 상품의 uid임으로 기존 파일이 존재해도 덮어쓸 것임
-      // 만약 나중에 여러 사진을 매핑하려면 uuid처럼 사진마다 고유한 이름 부여 필요
       const image_url = await this.uploadService.upload({
         type: UploadType.Image,
         filename: product.uid,
         file,
       });
+      if (product.image_url) {
+        await this.uploadService.delete({
+          file_url: product.image_url,
+        });
+      }
       return this.productsService.updateOne(
         { uid: product_id },
         { ...body, image_url },
@@ -110,8 +113,7 @@ export class ProductsController {
     );
     if (product.image_url) {
       await this.uploadService.delete({
-        type: UploadType.Image,
-        filename: product.uid,
+        file_url: product.image_url,
       });
     }
     return this.productsService.deleteOne({ uid: product_id });
