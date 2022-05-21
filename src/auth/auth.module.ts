@@ -15,7 +15,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
     UsersModule,
     PassportModule,
     JwtModule.registerAsync({
-      useFactory: async (configService: ConfigService) => {
+      useFactory: async (configService: ConfigService<IEnv>) => {
         return {
           secret: configService.get<string>('JWT_SECRET'),
           signOptions: {

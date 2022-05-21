@@ -17,12 +17,14 @@ import { UploadModule } from './upload/upload.module';
       isGlobal: true,
       cache: true,
       envFilePath: '.env.dev',
-      ignoreEnvFile: process.env.NODE_ENV === 'prod',
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
       validationOptions: {
         abortEarly: true,
       },
-      validationSchema: Joi.object({
-        NODE_ENV: Joi.string().valid('dev', 'prod', 'test').default('dev'),
+      validationSchema: Joi.object<any, false, IEnv>({
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'test')
+          .default('development'),
         PORT: Joi.number().default(3000),
 
         JWT_SECRET: Joi.string().required(),
@@ -37,7 +39,7 @@ import { UploadModule } from './upload/upload.module';
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: async (configService: ConfigService<IEnv>) => ({
         uri: configService.get('MONGODB_URL'),
       }),
       inject: [ConfigService],
