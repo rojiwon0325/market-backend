@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { CategoriesModule } from './categories/categories.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -27,6 +28,11 @@ import { CategoriesModule } from './categories/categories.module';
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRESIN: Joi.string().required(),
         MONGODB_URL: Joi.string().required(),
+
+        AWS_CLIENT_ID: Joi.string().required(),
+        AWS_SECRET: Joi.string().required(),
+        AWS_REGION: Joi.string().required(),
+        AWS_S3_BUCKET: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({
@@ -43,6 +49,7 @@ import { CategoriesModule } from './categories/categories.module';
     ProductsModule,
     OrdersModule,
     CategoriesModule,
+    UploadModule,
   ],
 })
 export class AppModule {}
