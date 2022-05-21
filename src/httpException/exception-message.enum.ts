@@ -15,4 +15,5 @@ export enum ExceptionMessage {
   REQUIRED_PRODUCT_PRICE = '상품 가격이 필요합니다.',
   MIN_PRODUCT_PRICE = '상품 가격은 0이상입니다.',
   REQUIRED_PRODUCT_IMAGE_URL = '상품 이미지 주소가 필요합니다.',
+  FAIL_UPLOAD = '업로드에 실패하였습니다.',
 }

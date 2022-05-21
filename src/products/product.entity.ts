@@ -3,7 +3,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  // IsUrl,
+  IsUrl,
   IsUUID,
   Min,
 } from 'class-validator';
@@ -47,10 +47,13 @@ export class ProductEntity {
   @Prop({ required: false })
   description?: string; // 짧은 설명
 
-  /**
   @IsUrl({}, { message: ExceptionMessage.REQUIRED_PRODUCT_IMAGE_URL })
-  @Prop({ required: true })
-  image_url: string;
+  @IsOptional()
+  @Expose()
+  @Prop({ required: false })
+  image_url?: string;
+
+  /** 
   @IsUrl()
   @IsOptional()
   @Prop({ required: false })

@@ -55,9 +55,9 @@ export class ProductsRepository {
     });
   }
 
-  async create(dto: CreateProductDTO): Promise<ProductDetailEntity> {
+  async create(dto: CreateProductDTO): Promise<ProductEntity> {
     const product = await this.productModel.create(dto);
-    return plainToInstance(ProductDetailEntity, product.toObject(), {
+    return plainToInstance(ProductEntity, product.toObject(), {
       strategy: 'excludeAll',
     });
   }
