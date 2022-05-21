@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
-import { UploadFileDTO } from './upload.dto';
+import { DeleteFileDTO, UploadFileDTO } from './upload.dto';
 
 @Injectable()
 export class UploadService {
@@ -26,7 +26,7 @@ export class UploadService {
   }
 
   // AOP패턴이 적용되지 않았다. 예외 로그, 예외처리, 파일 업로드 작업을 모두 진행하고 있다.
-  async uploadFile({ type, filename, file }: UploadFileDTO): Promise<string> {
+  async upload({ type, filename, file }: UploadFileDTO): Promise<string> {
     try {
       const Key = `${type}/${filename}`;
       await this.s3.putObject({
@@ -43,5 +43,12 @@ export class UploadService {
         ExceptionMessage.FAIL_UPLOAD,
       );
     }
+  }
+
+  async delete({ type, filename }: DeleteFileDTO) {
+    return this.s3.deleteObject({
+      Bucket: this.bucket,
+      Key: `${type}/${filename}`,
+    });
   }
 }
