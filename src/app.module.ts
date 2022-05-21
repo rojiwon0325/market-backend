@@ -10,6 +10,7 @@ import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { CategoriesModule } from './categories/categories.module';
 import { UploadModule } from './upload/upload.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -25,8 +26,10 @@ import { UploadModule } from './upload/upload.module';
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
           .default('development'),
-        PORT: Joi.number().default(3000),
+        PORT: Joi.number().default(4000),
 
+        JWT_DOMAIN: Joi.string().required(),
+        CLIENT_DOMAIN: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRESIN: Joi.string().required(),
         MONGODB_URL: Joi.string().required(),
@@ -53,5 +56,6 @@ import { UploadModule } from './upload/upload.module';
     CategoriesModule,
     UploadModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

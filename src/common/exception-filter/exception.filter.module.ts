@@ -10,4 +10,4 @@ import { APP_FILTER } from '@nestjs/core';
     },
   ],
 })
-export class HttpExceptionFilterModule {}
+export class ExceptionFilterModule {}
