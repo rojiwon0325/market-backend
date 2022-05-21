@@ -50,7 +50,7 @@ export class ProductsService {
     }
   }
 
-  async create(dto: CreateProductDTO): Promise<ProductDetailEntity> {
+  async create(dto: CreateProductDTO): Promise<ProductEntity> {
     const product = await this.productsRepository.create(dto);
     return product;
   }

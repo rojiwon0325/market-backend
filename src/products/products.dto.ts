@@ -1,6 +1,6 @@
 import { ProductEntity } from './product.entity';
 import { OmitType, PickType } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsInt, IsOptional, IsString, IsUrl, IsUUID } from 'class-validator';
 import { Exclude, Type } from 'class-transformer';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 
@@ -8,7 +8,7 @@ export class ProductSimpleEntitiy extends PickType(ProductEntity, [
   'uid',
   'name',
   'price',
-  //'image_url',
+  'image_url',
 ]) {}
 
 export class ProductDetailEntity extends OmitType(ProductEntity, [
@@ -46,6 +46,10 @@ export class UpdateProductDTO {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @IsUrl()
+  @IsOptional()
+  image_url?: string;
 }
 
 export class ProductIdParam {
