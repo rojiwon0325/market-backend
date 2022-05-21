@@ -26,8 +26,8 @@ async function bootstrap() {
     csurf({
       cookie: true,
     }),
-  ); */
-
+  );
+ */
   await app.listen(process.env.PORT);
 }
 bootstrap();

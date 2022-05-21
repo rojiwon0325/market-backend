@@ -6,9 +6,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Public } from 'src/auth/Public.decorator';
 import { UploadType, DeleteFileDTO } from './upload.dto';
 import { UploadService } from './upload.service';
 
+@Public()
 @Controller('upload')
 export class UploadController {
   constructor(private readonly service: UploadService) {}
