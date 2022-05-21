@@ -4,6 +4,7 @@ import { AuthenticateUserDTO, CreateUserDTO, UserDetail } from './users.dto';
 import { User } from './user.decorator';
 import { UserRole } from './user.entity';
 import { Roles } from './roles.decorator';
+import { Public } from 'src/auth/Public.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -20,6 +21,7 @@ export class UsersController {
     return user;
   }
 
+  @Public()
   @Post('create')
   create(@Body() body: CreateUserDTO) {
     return this.usersService.create(body);
