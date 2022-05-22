@@ -1,18 +1,16 @@
 import { CreateOrderBody, OrderIdParam } from './dtos/order.dto';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { Public } from 'src/auth/Public.decorator';
 import { User } from 'src/users/user.decorator';
 import { OrdersService } from './orders.service';
 import { UserDetail } from 'src/users/users.dto';
+import { Roles } from 'src/users/roles.decorator';
+import { UserRole } from 'src/users/user.entity';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  /**
-   * 나중에 지워야 하는 테스트용 api
-   */
-  @Public()
+  @Roles(UserRole.Admin)
   @Get('all')
   find() {
     return this.ordersService.findAll();

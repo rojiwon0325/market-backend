@@ -1,12 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
-import * as csurf from 'csurf';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'debug', 'log', 'verbose', 'warn'],
+    logger: ['error', 'debug', 'verbose', 'warn'],
   });
   app.use(
     helmet({
@@ -21,13 +20,7 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
-  /**
-  app.use(
-    csurf({
-      cookie: true,
-    }),
-  );
- */
+
   await app.listen(process.env.PORT);
 }
 bootstrap();

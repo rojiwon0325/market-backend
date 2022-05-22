@@ -23,8 +23,9 @@ import { UploadService } from 'src/upload/upload.service';
 import { UploadType } from 'src/upload/upload.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductEntity } from './product.entity';
+import { Roles } from 'src/users/roles.decorator';
+import { UserRole } from 'src/users/user.entity';
 
-@Public()
 @Controller('products')
 export class ProductsController {
   constructor(
@@ -32,16 +33,19 @@ export class ProductsController {
     private readonly uploadService: UploadService,
   ) {}
 
+  @Public()
   @Get()
   find(): Promise<ProductSimpleEntitiy[]> {
     return this.productsService.findAll(ProductSimpleEntitiy);
   }
 
+  @Public()
   @Get('search')
   search(@Query() { keyword }: SearchQuery): Promise<ProductSimpleEntitiy[]> {
     return this.productsService.search(keyword);
   }
 
+  @Public()
   @Get(':product_id')
   findOne(
     @Param() { product_id }: ProductIdParam,
@@ -52,6 +56,7 @@ export class ProductsController {
     );
   }
 
+  @Roles(UserRole.Admin)
   @Post('create')
   @UseInterceptors(FileInterceptor(UploadType.Image))
   async create(
@@ -73,6 +78,7 @@ export class ProductsController {
     return product;
   }
 
+  @Roles(UserRole.Admin)
   @Post(':product_id/update')
   @UseInterceptors(FileInterceptor(UploadType.Image))
   async update(
@@ -103,6 +109,7 @@ export class ProductsController {
     return this.productsService.updateOne({ uid: product_id }, body);
   }
 
+  @Roles(UserRole.Admin)
   @Post(':product_id/delete')
   async delete(
     @Param() { product_id }: ProductIdParam,
