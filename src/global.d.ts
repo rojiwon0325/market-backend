@@ -2,6 +2,8 @@ type IEnv = {
   NODE_ENV: 'development' | 'production' | 'test';
   PORT: number;
 
+  JWT_DOMAIN: string;
+  CLIENT_DOMAIN: string;
   JWT_SECRET: string;
   JWT_EXPIRESIN: string;
   MONGODB_URL: string;

@@ -2332,6 +2332,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/csurf@npm:^1.11.2":
+  version: 1.11.2
+  resolution: "@types/csurf@npm:1.11.2"
+  dependencies:
+    "@types/express-serve-static-core": "*"
+  checksum: 1827f6760d43ae12390f0308289f2c40537bbcb19ec854d0c654e3129074edf6108ddab99a06986813b6cf31d4fc9fa34eaa3d418f647edf607d8af4c69d62e7
+  languageName: node
+  linkType: hard
+
 "@types/eslint-scope@npm:^3.7.3":
   version: 3.7.3
   resolution: "@types/eslint-scope@npm:3.7.3"
@@ -2359,7 +2368,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-serve-static-core@npm:^4.17.18":
+"@types/express-serve-static-core@npm:*, @types/express-serve-static-core@npm:^4.17.18":
   version: 4.17.28
   resolution: "@types/express-serve-static-core@npm:4.17.28"
   dependencies:
@@ -5173,6 +5182,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"helmet@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "helmet@npm:5.1.0"
+  checksum: 076958ed8262b72e77276f9e7e9a5e3628b3a44bf39a64a856e919fd3d5a887d3a29b58c1729dfdb0645afd440e763d29a871e866f1fa658f91a718da82ca052
+  languageName: node
+  linkType: hard
+
 "hexoid@npm:1.0.0":
   version: 1.0.0
   resolution: "hexoid@npm:1.0.0"
@@ -6576,6 +6592,7 @@ __metadata:
     "@nestjs/testing": ^8.0.0
     "@types/bcrypt": ^5.0.0
     "@types/cookie-parser": ^1.4.3
+    "@types/csurf": ^1.11.2
     "@types/express": ^4.17.13
     "@types/jest": 27.4.1
     "@types/multer": ^1.4.7
@@ -6592,6 +6609,7 @@ __metadata:
     eslint: ^8.0.1
     eslint-config-prettier: ^8.3.0
     eslint-plugin-prettier: ^4.0.0
+    helmet: ^5.1.0
     jest: ^27.2.5
     joi: ^17.6.0
     mongoose: ^6.3.2

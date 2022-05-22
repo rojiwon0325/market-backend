@@ -25,7 +25,6 @@ export class UploadService {
     });
   }
 
-  // AOP패턴이 적용되지 않았다. 예외 로그, 예외처리, 파일 업로드 작업을 모두 진행하고 있다.
   async upload({ type, filename, file }: UploadFileDTO): Promise<string> {
     try {
       const Key = `${type}/${filename}-${Date.now()}`;
@@ -38,7 +37,7 @@ export class UploadService {
       });
       return `https://${this.bucket}.s3.${this.region}.amazonaws.com/${Key}`;
     } catch (error) {
-      console.log(error.message);
+      console.log(`${error.name}: ${error.message} in upload handler`);
       throw this.exceptionService.getBadRequestException(
         ExceptionMessage.FAIL_UPLOAD,
       );

@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { User } from 'src/users/user.decorator';
@@ -9,7 +10,10 @@ import { Public } from './Public.decorator';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService<IEnv>,
+  ) {}
 
   @Public()
   @UseGuards(AuthGuard('local'))
@@ -19,7 +23,11 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<LoginDTO> {
     const result = await this.authService.signin(user);
-    res.cookie('access_token', result.access_token);
+    res.cookie('access_token', result.access_token, {
+      domain: this.configService.get('JWT_DOMAIN'),
+      httpOnly: true,
+      secure: true,
+    });
     return result;
   }
 

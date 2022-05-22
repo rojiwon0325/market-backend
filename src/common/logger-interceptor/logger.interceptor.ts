@@ -1,11 +1,9 @@
-import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import {
   NestInterceptor,
   ExecutionContext,
   Injectable,
   CallHandler,
   HttpException,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { Observable, catchError, throwError } from 'rxjs';
 
@@ -14,18 +12,14 @@ export class LoggerInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((err) => {
-        if (err instanceof HttpException) {
-          return throwError(() => err);
-        } else {
+        if (!(err instanceof HttpException)) {
           console.log(
             `${err.name}${err.message ? ': ' + err.message : ''} in ${
               context.getHandler().name
             } at ${context.getClass().name}`,
-          ); // 처리되지 않은 비정상 에러만 로깅하도록 한다.
-          return throwError(
-            () => new InternalServerErrorException(ExceptionMessage.UNEXPECTED),
           );
         }
+        return throwError(() => err);
       }),
     );
   }
