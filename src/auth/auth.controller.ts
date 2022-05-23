@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { User } from 'src/users/user.decorator';
 import { UserEntity } from 'src/users/user.entity';
 import { JWTPayloadDTO, LoginDTO } from './auth.dto';
@@ -22,7 +22,7 @@ export class AuthController {
     @User() user: UserEntity,
     @Res({ passthrough: true }) res: Response,
   ): Promise<LoginDTO> {
-    const result = await this.authService.signin(user);
+    const result = await this.authService.signIn(user);
     res.cookie('access_token', result.access_token, {
       domain: this.configService.get('JWT_DOMAIN'),
       httpOnly: true,
@@ -38,5 +38,15 @@ export class AuthController {
   ): Promise<JWTPayloadDTO> {
     res.clearCookie('access_token');
     return { uid: user.uid };
+  }
+
+  @Public()
+  @Get('sign-in-check')
+  async isSigned(@Req() req: Request): Promise<boolean> {
+    if ('access_token' in req.cookies) {
+      return this.authService.signInCheck(req.cookies['access_token']);
+    } else {
+      return false;
+    }
   }
 }

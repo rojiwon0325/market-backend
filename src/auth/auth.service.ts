@@ -6,7 +6,7 @@ import { UsersService } from 'src/users/users.service';
 import { validate } from 'class-validator';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
-import { LoginDTO } from './auth.dto';
+import { JWTPayloadDTO, LoginDTO } from './auth.dto';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -29,11 +29,15 @@ export class AuthService {
     return this.usersService.findAuthenticatedUser(data);
   }
 
-  async signin(user: UserEntity): Promise<LoginDTO> {
+  async signIn(user: UserEntity): Promise<LoginDTO> {
     const payload = { uid: user.uid };
     return {
       access_token: this.jwtService.sign(payload),
       user,
     };
+  }
+  async signInCheck(token: string) {
+    const payload = this.jwtService.verify<JWTPayloadDTO>(token);
+    return payload ? true : false;
   }
 }
