@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { OrderFilter, OrderResponse } from './dtos/order.dto';
 import {
   OrderItemDocument,
@@ -47,6 +47,11 @@ export class OrdersRepository {
       return undefined;
     }
   }
+
+  async countOrder(filter: FilterQuery<OrderDocument>): Promise<number> {
+    return this.orderModel.count(filter);
+  }
+
   async createOrder({
     customer_id,
     items,

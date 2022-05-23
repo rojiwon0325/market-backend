@@ -10,6 +10,8 @@ import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { OrdersRepository } from './orders.repository';
 import { ProductSimpleEntitiy } from 'src/products/products.dto';
+import { FilterQuery } from 'mongoose';
+import { OrderDocument } from './entities/order.entity';
 
 @Injectable()
 export class OrdersService {
@@ -34,6 +36,10 @@ export class OrdersService {
         ExceptionMessage.NOT_FOUND,
       );
     }
+  }
+
+  async count(filter: FilterQuery<OrderDocument>): Promise<number> {
+    return this.ordersRepository.countOrder(filter);
   }
 
   async createOrder(dto: CreateOrderDTO) {

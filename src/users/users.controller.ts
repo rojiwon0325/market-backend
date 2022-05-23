@@ -2,7 +2,7 @@ import { UsersService } from './users.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthenticateUserDTO, CreateUserDTO, UserDetail } from './users.dto';
 import { User } from './user.decorator';
-import { UserRole } from './user.entity';
+import { UserEntity, UserRole } from './user.entity';
 import { Roles } from './roles.decorator';
 import { Public } from 'src/auth/Public.decorator';
 
@@ -12,18 +12,18 @@ export class UsersController {
 
   @Roles(UserRole.Admin)
   @Get()
-  find() {
+  find(): Promise<UserEntity[]> {
     return this.usersService.find();
   }
 
   @Get('profile')
-  profile(@User() user: UserDetail) {
+  async profile(@User() user: UserDetail): Promise<UserDetail> {
     return user;
   }
 
   @Public()
   @Post('create')
-  create(@Body() body: CreateUserDTO) {
+  create(@Body() body: CreateUserDTO): Promise<UserEntity> {
     return this.usersService.create(body);
   }
 
@@ -31,7 +31,7 @@ export class UsersController {
    * 자기 자신만 바꿀 수 있다. 로그인 한 정보가 아닌 body정보로 '나'를 인증
    */
   @Post('delete')
-  delete(@Body() body: AuthenticateUserDTO) {
+  delete(@Body() body: AuthenticateUserDTO): Promise<UserEntity> {
     return this.usersService.delete(body);
   }
 }

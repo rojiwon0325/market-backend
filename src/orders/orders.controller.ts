@@ -3,6 +3,7 @@ import {
   OrderFilter,
   OrderIdParam,
   OrderResponse,
+  OrdersResponse,
 } from './dtos/order.dto';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { User } from 'src/users/user.decorator';
@@ -22,8 +23,13 @@ export class OrdersController {
   }
 
   @Get()
-  findUserOrders(@User() user: UserDetail): Promise<OrderResponse[]> {
-    return this.ordersService.findUserOrders({ customer_id: user.uid });
+  async findUserOrders(@User() user: UserDetail): Promise<OrdersResponse> {
+    return {
+      total: await this.ordersService.count({ customer_id: user.uid }),
+      orders: await this.ordersService.findUserOrders({
+        customer_id: user.uid,
+      }),
+    };
   }
 
   @Get(':order_id')

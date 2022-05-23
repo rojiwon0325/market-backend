@@ -2,13 +2,14 @@ import { ProductEntity } from './product.entity';
 import { OmitType, PickType } from '@nestjs/swagger';
 import {
   IsInt,
+  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import { Exclude, Type } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 
 export class ProductSimpleEntitiy extends PickType(ProductEntity, [
@@ -76,10 +77,12 @@ export class SearchQuery {
 }
 
 export class ProductsResponse {
-  @IsString()
+  @IsNumber()
+  @Expose()
   total: number;
 
   @ValidateNested({ each: true })
   @Type(() => ProductSimpleEntitiy)
+  @Expose()
   products: ProductSimpleEntitiy[];
 }
