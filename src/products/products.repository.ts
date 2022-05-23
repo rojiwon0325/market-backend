@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { ProductDocument, ProductEntity } from './product.entity';
 import {
   CreateProductDTO,
   ProductDetailEntity,
   ProductFilter,
   ProductSimpleEntitiy,
+  ProductsResponse,
   UpdateProductDTO,
 } from './products.dto';
 
@@ -42,17 +43,31 @@ export class ProductsRepository {
     return plainToInstance(cls, products, { strategy: 'excludeAll' });
   }
 
-  async search(search: string): Promise<ProductSimpleEntitiy[]> {
+  async search(search: string): Promise<ProductsResponse> {
+    const regex = new RegExp(`\\b${search.split(' ').join('|')}\\b`, 'ig');
     const products = (
       await this.productModel.find({
         name: {
-          $regex: new RegExp(`\\b${search.split(' ').join('|')}\\b`, 'ig'),
+          $regex: regex,
         },
       })
     ).map((product) => product.toObject());
-    return plainToInstance(ProductSimpleEntitiy, products, {
+    const total = await this.count({
+      name: {
+        $regex: regex,
+      },
+    });
+    const response = {
+      total,
+      products,
+    };
+    return plainToInstance(ProductsResponse, response, {
       strategy: 'excludeAll',
     });
+  }
+
+  async count(filter: FilterQuery<ProductDocument>): Promise<number> {
+    return this.productModel.count(filter);
   }
 
   async create(dto: CreateProductDTO): Promise<ProductEntity> {

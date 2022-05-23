@@ -4,13 +4,15 @@ import {
   ProductDetailEntity,
   ProductFilter,
   ProductSimpleEntitiy,
+  ProductsResponse,
   UpdateProductDTO,
 } from './products.dto';
 import { ProductsRepository } from './products.repository';
 import { Injectable } from '@nestjs/common';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
-import { ProductEntity } from './product.entity';
+import { ProductDocument, ProductEntity } from './product.entity';
+import { FilterQuery } from 'mongoose';
 
 @Injectable()
 export class ProductsService {
@@ -32,7 +34,7 @@ export class ProductsService {
     return this.productsRepository.find(filter, cls);
   }
 
-  async search(search: string): Promise<ProductSimpleEntitiy[]> {
+  async search(search: string): Promise<ProductsResponse> {
     return this.productsRepository.search(search);
   }
 
@@ -48,6 +50,10 @@ export class ProductsService {
         ExceptionMessage.NOT_FOUND_PRODUCT,
       );
     }
+  }
+
+  async count(filter: FilterQuery<ProductDocument>): Promise<number> {
+    return this.productsRepository.count(filter);
   }
 
   async create(dto: CreateProductDTO): Promise<ProductEntity> {

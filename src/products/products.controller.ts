@@ -4,6 +4,7 @@ import {
   ProductFilter,
   ProductIdParam,
   ProductSimpleEntitiy,
+  ProductsResponse,
   SearchQuery,
   UpdateProductDTO,
 } from './products.dto';
@@ -41,7 +42,7 @@ export class ProductsController {
 
   @Public()
   @Get('search')
-  search(@Query() { keyword }: SearchQuery): Promise<ProductSimpleEntitiy[]> {
+  search(@Query() { keyword }: SearchQuery): Promise<ProductsResponse> {
     return this.productsService.search(keyword);
   }
 

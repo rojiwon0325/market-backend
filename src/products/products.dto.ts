@@ -1,6 +1,13 @@
 import { ProductEntity } from './product.entity';
 import { OmitType, PickType } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString, IsUrl, IsUUID } from 'class-validator';
+import {
+  IsInt,
+  IsOptional,
+  IsString,
+  IsUrl,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
 import { Exclude, Type } from 'class-transformer';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 
@@ -66,4 +73,13 @@ export class SearchQuery {
   @IsString()
   @Type(() => String)
   keyword: string;
+}
+
+export class ProductsResponse {
+  @IsString()
+  total: number;
+
+  @ValidateNested({ each: true })
+  @Type(() => ProductSimpleEntitiy)
+  products: ProductSimpleEntitiy[];
 }

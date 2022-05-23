@@ -1,4 +1,9 @@
-import { CreateOrderBody, OrderIdParam } from './dtos/order.dto';
+import {
+  CreateOrderBody,
+  OrderFilter,
+  OrderIdParam,
+  OrderResponse,
+} from './dtos/order.dto';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { User } from 'src/users/user.decorator';
 import { OrdersService } from './orders.service';
@@ -12,17 +17,20 @@ export class OrdersController {
 
   @Roles(UserRole.Admin)
   @Get('all')
-  find() {
+  find(): Promise<OrderResponse[]> {
     return this.ordersService.findAll();
   }
 
   @Get()
-  findUserOrders(@User() user: UserDetail) {
+  findUserOrders(@User() user: UserDetail): Promise<OrderResponse[]> {
     return this.ordersService.findUserOrders({ customer_id: user.uid });
   }
 
   @Get(':order_id')
-  findOne(@User() user: UserDetail, @Param() { order_id }: OrderIdParam) {
+  findOne(
+    @User() user: UserDetail,
+    @Param() { order_id }: OrderIdParam,
+  ): Promise<OrderResponse> {
     return this.ordersService.findOrder({
       uid: order_id,
       customer_id: user.uid,
@@ -37,7 +45,7 @@ export class OrdersController {
     @User() user: UserDetail,
     @Body()
     { items }: CreateOrderBody,
-  ) {
+  ): Promise<OrderResponse> {
     const order = await this.ordersService.createOrder({
       customer_id: user.uid,
       items,
@@ -50,7 +58,7 @@ export class OrdersController {
   async delete(
     @User() { uid }: UserDetail,
     @Param() { order_id }: OrderIdParam,
-  ) {
+  ): Promise<OrderFilter> {
     return this.ordersService.deleteOrder({ customer_id: uid, uid: order_id });
   }
 }
