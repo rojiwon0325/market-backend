@@ -1,9 +1,10 @@
 import { CategoriesRepository } from './categories.repository';
 import { Injectable } from '@nestjs/common';
-import { CategoryEntity } from './category.entity';
+import { CategoryDocument, CategoryEntity } from './category.entity';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { CategoryFilter, CategoryDTO } from './categories.dto';
+import { FilterQuery } from 'mongoose';
 
 @Injectable()
 export class CategoriesService {
@@ -25,6 +26,10 @@ export class CategoriesService {
         ExceptionMessage.NOT_FOUND,
       );
     }
+  }
+
+  async count(filter?: FilterQuery<CategoryDocument>): Promise<number> {
+    return this.categoriesRepository.count({ ...filter });
   }
 
   async create(dto: CategoryDTO): Promise<CategoryEntity> {

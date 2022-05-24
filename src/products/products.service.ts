@@ -3,7 +3,7 @@ import {
   CreateProductDTO,
   ProductDetailEntity,
   ProductFilter,
-  ProductSimpleEntitiy,
+  ProductSimpleEntity,
   ProductsResponse,
   UpdateProductDTO,
 } from './products.dto';
@@ -21,13 +21,13 @@ export class ProductsService {
     private readonly exceptionService: HttpExceptionService,
   ) {}
 
-  async findAll<T = ProductSimpleEntitiy | ProductDetailEntity>(
+  async findAll<T = ProductSimpleEntity | ProductDetailEntity | ProductEntity>(
     cls: ClassConstructor<T>,
   ) {
     return this.productsRepository.find({}, cls);
   }
 
-  async find<T = ProductSimpleEntitiy | ProductDetailEntity>(
+  async find<T = ProductSimpleEntity | ProductDetailEntity | ProductEntity>(
     filter: Partial<ProductEntity>,
     cls: ClassConstructor<T>,
   ) {
@@ -38,7 +38,7 @@ export class ProductsService {
     return this.productsRepository.search(search);
   }
 
-  async findOne<T = ProductDetailEntity | ProductSimpleEntitiy>(
+  async findOne<T = ProductSimpleEntity | ProductDetailEntity | ProductEntity>(
     filter: ProductFilter,
     cls: ClassConstructor<T>,
   ): Promise<T> {
@@ -52,8 +52,8 @@ export class ProductsService {
     }
   }
 
-  async count(filter: FilterQuery<ProductDocument>): Promise<number> {
-    return this.productsRepository.count(filter);
+  async count(filter?: FilterQuery<ProductDocument>): Promise<number> {
+    return this.productsRepository.count({ ...filter });
   }
 
   async create(dto: CreateProductDTO): Promise<ProductEntity> {

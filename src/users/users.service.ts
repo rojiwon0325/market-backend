@@ -1,6 +1,6 @@
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from './user.entity';
+import { UserDocument, UserEntity } from './user.entity';
 import {
   AuthenticateUserDTO,
   CreateUserDTO,
@@ -11,6 +11,7 @@ import {
 import { UsersRepository } from './users.repository';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { ClassConstructor } from 'class-transformer';
+import { FilterQuery } from 'mongoose';
 
 @Injectable()
 export class UsersService {
@@ -19,8 +20,12 @@ export class UsersService {
     private readonly exceptionService: HttpExceptionService,
   ) {}
 
-  find(): Promise<UserEntity[]> {
+  find(): Promise<UserPublic[]> {
     return this.usersRepository.findAll();
+  }
+
+  async count(filter?: FilterQuery<UserDocument>): Promise<number> {
+    return this.usersRepository.count({ ...filter });
   }
 
   async create(dto: CreateUserDTO): Promise<UserEntity> {

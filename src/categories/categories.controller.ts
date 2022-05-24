@@ -1,13 +1,17 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Public } from 'src/auth/Public.decorator';
 import {
-  ProductSimpleEntitiy,
+  ProductSimpleEntity,
   ProductsResponse,
 } from 'src/products/products.dto';
 import { ProductsService } from 'src/products/products.service';
 import { Roles } from 'src/users/roles.decorator';
 import { UserRole } from 'src/users/user.entity';
-import { CategoryDTO, CategoryIdParam } from './categories.dto';
+import {
+  CategoriesResponse,
+  CategoryDTO,
+  CategoryIdParam,
+} from './categories.dto';
 import { CategoriesService } from './categories.service';
 import { CategoryEntity } from './category.entity';
 
@@ -20,8 +24,11 @@ export class CategoriesController {
 
   @Public()
   @Get()
-  findAll(): Promise<CategoryEntity[]> {
-    return this.categoriesService.findAll();
+  async findAll(): Promise<CategoriesResponse> {
+    return {
+      total: await this.categoriesService.count(),
+      categories: await this.categoriesService.findAll(),
+    };
   }
 
   @Public()
@@ -33,7 +40,7 @@ export class CategoriesController {
       total: await this.productsService.count({ category_id }),
       products: await this.productsService.find(
         { category_id },
-        ProductSimpleEntitiy,
+        ProductSimpleEntity,
       ),
     };
   }

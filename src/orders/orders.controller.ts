@@ -18,8 +18,11 @@ export class OrdersController {
 
   @Roles(UserRole.Admin)
   @Get('all')
-  find(): Promise<OrderResponse[]> {
-    return this.ordersService.findAll();
+  async find(): Promise<OrdersResponse> {
+    return {
+      total: await this.ordersService.count(),
+      orders: await this.ordersService.findAll(),
+    };
   }
 
   @Get()

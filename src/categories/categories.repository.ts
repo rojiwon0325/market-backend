@@ -1,7 +1,7 @@
 import { plainToInstance } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { CategoryDocument, CategoryEntity } from './category.entity';
 import { CategoryFilter, CategoryDTO } from './categories.dto';
 
@@ -30,6 +30,10 @@ export class CategoriesRepository {
       return undefined;
     }
   }
+  async count(filter: FilterQuery<CategoryDocument>): Promise<number> {
+    return this.categoryModel.count(filter);
+  }
+
   async create(dto: CategoryDTO): Promise<CategoryEntity> {
     const category = await this.categoryModel.create(dto);
     return plainToInstance(CategoryEntity, category.toObject(), {

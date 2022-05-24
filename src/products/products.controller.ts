@@ -1,9 +1,9 @@
 import {
+  AdminProductsResponse,
   CreateProductDTO,
   ProductDetailEntity,
   ProductFilter,
   ProductIdParam,
-  ProductSimpleEntitiy,
   ProductsResponse,
   SearchQuery,
   UpdateProductDTO,
@@ -34,10 +34,13 @@ export class ProductsController {
     private readonly uploadService: UploadService,
   ) {}
 
-  @Public()
-  @Get()
-  find(): Promise<ProductSimpleEntitiy[]> {
-    return this.productsService.findAll(ProductSimpleEntitiy);
+  @Roles(UserRole.Admin)
+  @Get('admin')
+  async findEntity(): Promise<AdminProductsResponse> {
+    return {
+      total: await this.productsService.count(),
+      products: await this.productsService.findAll(ProductEntity),
+    };
   }
 
   @Public()

@@ -7,7 +7,7 @@ import {
   CreateProductDTO,
   ProductDetailEntity,
   ProductFilter,
-  ProductSimpleEntitiy,
+  ProductSimpleEntity,
   ProductsResponse,
   UpdateProductDTO,
 } from './products.dto';
@@ -19,7 +19,7 @@ export class ProductsRepository {
     private productModel: Model<ProductDocument>,
   ) {}
 
-  async findOne<T = ProductSimpleEntitiy | ProductDetailEntity>(
+  async findOne<T = ProductSimpleEntity | ProductDetailEntity | ProductEntity>(
     filter: ProductFilter,
     cls: ClassConstructor<T>,
   ): Promise<T> {
@@ -33,7 +33,7 @@ export class ProductsRepository {
     }
   }
 
-  async find<T = ProductSimpleEntitiy | ProductDetailEntity>(
+  async find<T = ProductSimpleEntity | ProductDetailEntity | ProductEntity>(
     filter: Partial<ProductEntity>,
     cls: ClassConstructor<T>,
   ): Promise<T[]> {

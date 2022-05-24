@@ -1,6 +1,11 @@
 import { UsersService } from './users.service';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { AuthenticateUserDTO, CreateUserDTO, UserDetail } from './users.dto';
+import {
+  AuthenticateUserDTO,
+  CreateUserDTO,
+  UserDetail,
+  UsersResponse,
+} from './users.dto';
 import { User } from './user.decorator';
 import { UserEntity, UserRole } from './user.entity';
 import { Roles } from './roles.decorator';
@@ -12,8 +17,11 @@ export class UsersController {
 
   @Roles(UserRole.Admin)
   @Get()
-  find(): Promise<UserEntity[]> {
-    return this.usersService.find();
+  async find(): Promise<UsersResponse> {
+    return {
+      total: await this.usersService.count(),
+      users: await this.usersService.find(),
+    };
   }
 
   @Get('profile')

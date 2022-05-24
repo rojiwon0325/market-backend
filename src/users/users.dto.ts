@@ -1,6 +1,6 @@
 import { OmitType, PickType } from '@nestjs/swagger';
 import { Type, Exclude } from 'class-transformer';
-import { IsString, IsUUID } from 'class-validator';
+import { IsString, IsUUID, IsNumber, ValidateNested } from 'class-validator';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { UserEntity, UserRole } from './user.entity';
 
@@ -57,3 +57,12 @@ export class UserPublic extends OmitType(UserEntity, [
 export type FindOneUserDTO =
   | Pick<UserEntity, 'uid'>
   | Pick<UserEntity, 'email'>;
+
+export class UsersResponse {
+  @IsNumber()
+  total: number;
+
+  @ValidateNested({ each: true })
+  @Type(() => UserPublic)
+  users: UserPublic[];
+}

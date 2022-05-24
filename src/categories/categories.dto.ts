@@ -1,5 +1,6 @@
+import { CategoryEntity } from './category.entity';
 import { Type } from 'class-transformer';
-import { IsString, IsUUID } from 'class-validator';
+import { IsNumber, IsString, IsUUID, ValidateNested } from 'class-validator';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 
 export class CategoryDTO {
@@ -16,4 +17,13 @@ export class CategoryIdParam {
 export class CategoryFilter {
   @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   uid: string;
+}
+
+export class CategoriesResponse {
+  @IsNumber()
+  total: number;
+
+  @ValidateNested({ each: true })
+  @Type(() => CategoryEntity)
+  categories: CategoryEntity[];
 }

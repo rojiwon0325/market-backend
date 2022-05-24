@@ -12,7 +12,7 @@ import {
 import { Exclude, Expose, Type } from 'class-transformer';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 
-export class ProductSimpleEntitiy extends PickType(ProductEntity, [
+export class ProductSimpleEntity extends PickType(ProductEntity, [
   'uid',
   'name',
   'price',
@@ -82,7 +82,18 @@ export class ProductsResponse {
   total: number;
 
   @ValidateNested({ each: true })
-  @Type(() => ProductSimpleEntitiy)
+  @Type(() => ProductSimpleEntity)
   @Expose()
-  products: ProductSimpleEntitiy[];
+  products: ProductSimpleEntity[];
+}
+
+export class AdminProductsResponse {
+  @IsNumber()
+  @Expose()
+  total: number;
+
+  @ValidateNested({ each: true })
+  @Type(() => ProductEntity)
+  @Expose()
+  products: ProductEntity[];
 }

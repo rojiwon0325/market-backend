@@ -9,7 +9,7 @@ import { Injectable } from '@nestjs/common';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { OrdersRepository } from './orders.repository';
-import { ProductSimpleEntitiy } from 'src/products/products.dto';
+import { ProductSimpleEntity } from 'src/products/products.dto';
 import { FilterQuery } from 'mongoose';
 import { OrderDocument } from './entities/order.entity';
 
@@ -38,8 +38,8 @@ export class OrdersService {
     }
   }
 
-  async count(filter: FilterQuery<OrderDocument>): Promise<number> {
-    return this.ordersRepository.countOrder(filter);
+  async count(filter?: FilterQuery<OrderDocument>): Promise<number> {
+    return this.ordersRepository.countOrder({ ...filter });
   }
 
   async createOrder(dto: CreateOrderDTO) {
@@ -47,7 +47,7 @@ export class OrdersService {
     for (const item of dto.items) {
       const { uid, name, price } = await this.productsService.findOne(
         { uid: item.uid },
-        ProductSimpleEntitiy,
+        ProductSimpleEntity,
       );
       items.push({
         uid,
