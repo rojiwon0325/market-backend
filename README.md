@@ -21,13 +21,13 @@
 ## 🚩 기능구현
 
 <details>
-<summary><h3 style="display:inline-block;">회원 인증</h3></summary>
+<summary style="list-style-type:none"><h3>회원 인증</h3></summary>
 
 - [x] 로그인/로그아웃
 
 </details>
 <details>
-<summary><h3 style="display:inline-block;">회원 관리</h3></summary>
+<summary style="list-style-type:none"><h3>회원 관리</h3></summary>
 
 - [x] 회원 가입
 - [x] 내 정보 조회
@@ -40,7 +40,7 @@
 * [ ] 사용자 정보 변경 (ex) 관리자 권한 부여)
 </details>
 <details>
-<summary><h3 style="display:inline-block;">카테고리 및 상품 관리</h3></summary>
+<summary style="list-style-type:none"><h3>카테고리 및 상품 관리</h3></summary>
 
 - [x] 전체 카테고리 조회
 - [x] 카테고리별 상품 조회
@@ -52,7 +52,7 @@
 
 </details>
 <details>
-<summary><h3 style="display:inline-block;">장바구니</h3></summary>
+<summary style="list-style-type:none"><h3>장바구니</h3></summary>
 
 - [ ] 장바구니 물품 추가
 - [ ] 장바구니 보기
@@ -60,7 +60,7 @@
 - [ ] 장바구니 물품 구매
 </details>
 <details>
-<summary><h3 style="display:inline-block;">주문 관리</h3></summary>
+<summary style="list-style-type:none"><h3>주문 관리</h3></summary>
 
 - [x] 주문 요청
 - [x] 내 주문 내역 조회
@@ -75,7 +75,7 @@
 
 </details>
 <details>
-<summary><h3 style="display:inline-block;">환불/취소</h3></summary>
+<summary style="list-style-type:none"><h3>환불/취소</h3></summary>
 
 - [ ] 환불/취소 요청
   - 같은 api이지만 status를 다르게 적용
@@ -91,7 +91,7 @@
 
 </details>
 <details>
-<summary><h3 style="display:inline-block;">기타</h3></summary>
+<summary style="list-style-type:none"><h3>기타</h3></summary>
 
 - [x] 헬스 체크
 - [x] 로그인 상태 확인
