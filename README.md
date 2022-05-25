@@ -21,7 +21,7 @@
 ## 🚩 기능구현
 
 <details>
-<summary style="list-style-type:none"><h3>회원 인증</h3></summary>
+<summary><h3>회원 인증</h3></summary>
 
 - [x] 로그인/로그아웃
 
