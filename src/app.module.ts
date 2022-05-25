@@ -10,6 +10,7 @@ import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { CategoriesModule } from './categories/categories.module';
 import { AppController } from './app.controller';
+import { RefundsModule } from './refunds/refunds.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { AppController } from './app.controller';
     ProductsModule,
     OrdersModule,
     CategoriesModule,
+    RefundsModule,
   ],
   controllers: [AppController],
 })

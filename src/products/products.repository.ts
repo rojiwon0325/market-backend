@@ -81,13 +81,13 @@ export class ProductsRepository {
     filter: ProductFilter,
     dto: UpdateProductDTO,
   ): Promise<ProductEntity> {
-    const category = await this.productModel.findOne(filter);
-    if (category) {
+    const product = await this.productModel.findOne(filter);
+    if (product) {
       await this.productModel.updateOne(filter, dto);
       return plainToInstance(
         ProductEntity,
         {
-          ...category.toObject(),
+          ...product.toObject(),
           ...dto,
         },
         { strategy: 'excludeAll' },
