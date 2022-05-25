@@ -48,15 +48,15 @@ export class RefundsRepository {
     });
   }
 
-  async updateOne({ filter, dto }: UpdateRefundDTO): Promise<RefundEntity> {
+  async updateOne({ filter, data }: UpdateRefundDTO): Promise<RefundEntity> {
     const refund = await this.refundModel.findOne(filter);
     if (refund) {
-      await this.refundModel.updateOne(filter, dto);
+      await this.refundModel.updateOne(filter, data);
       return plainToInstance(
         RefundEntity,
         {
           ...refund.toObject(),
-          ...dto,
+          ...data,
         },
         { strategy: 'excludeAll' },
       );

@@ -12,5 +12,5 @@ export class UpdateRefundBody {}
 
 export type UpdateRefundDTO = {
   filter: FilterQuery<RefundDocument>;
-  dto: UpdateRefundBody;
+  data: UpdateRefundBody;
 };
