@@ -45,7 +45,7 @@ export declare class IBaseRepository<M>
 
 export abstract class BaseRepository<M> implements IBaseRepository<M> {
   constructor(
-    protected readonly model: Model<M & Document>,
+    private readonly model: Model<M & Document>,
     private readonly cls: ClassConstructor<M>,
   ) {}
 
