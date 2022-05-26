@@ -66,7 +66,9 @@ export abstract class BaseRepository<M> implements IBaseRepository<M> {
   }
   async create(data: Partial<M>): Promise<M> {
     const one = await this.model.create(data);
-    return plainToInstance(this.cls, one.toObject());
+    return plainToInstance(this.cls, one.toObject(), {
+      strategy: 'excludeAll',
+    });
   }
 
   async updateOne({ filter, data }: UpdateOneParameter<M>): Promise<M> {
