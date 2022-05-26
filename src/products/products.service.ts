@@ -1,18 +1,17 @@
-import { ClassConstructor } from 'class-transformer';
+import { Injectable } from '@nestjs/common';
+import { FilterQuery } from 'mongoose';
+import { ExceptionMessage } from 'src/httpException/exception-message.enum';
+import { HttpExceptionService } from 'src/httpException/http-exception.service';
+import { FindOneParameter, FindParameter } from 'src/interfaces/repository';
+import { ProductDetail } from './entities/product.detail';
+import { ProductDocument, ProductEntity } from './entities/product.entity';
+import { ProductSimple } from './entities/product.simple';
 import {
   CreateProductDTO,
-  ProductDetailEntity,
   ProductFilter,
-  ProductSimpleEntity,
-  ProductsResponse,
   UpdateProductDTO,
 } from './products.dto';
 import { ProductsRepository } from './products.repository';
-import { Injectable } from '@nestjs/common';
-import { HttpExceptionService } from 'src/httpException/http-exception.service';
-import { ExceptionMessage } from 'src/httpException/exception-message.enum';
-import { ProductDocument, ProductEntity } from './product.entity';
-import { FilterQuery } from 'mongoose';
 
 @Injectable()
 export class ProductsService {
@@ -21,51 +20,35 @@ export class ProductsService {
     private readonly exceptionService: HttpExceptionService,
   ) {}
 
-  async findAll<T = ProductSimpleEntity | ProductDetailEntity | ProductEntity>(
-    cls: ClassConstructor<T>,
-  ) {
-    return this.productsRepository.find({}, cls);
+  find<T = ProductEntity | ProductSimple | ProductDetail>(
+    parameter: FindParameter<ProductEntity, T>,
+  ): Promise<T[]> {
+    return this.productsRepository.find(parameter);
   }
 
-  async find<T = ProductSimpleEntity | ProductDetailEntity | ProductEntity>(
-    filter: Partial<ProductEntity>,
-    cls: ClassConstructor<T>,
-  ) {
-    return this.productsRepository.find(filter, cls);
-  }
-
-  async search(search: string): Promise<ProductsResponse> {
-    return this.productsRepository.search(search);
-  }
-
-  async findOne<T = ProductSimpleEntity | ProductDetailEntity | ProductEntity>(
-    filter: ProductFilter,
-    cls: ClassConstructor<T>,
+  async findOne<T = ProductEntity | ProductSimple | ProductDetail>(
+    parameter: FindOneParameter<ProductEntity, T>,
   ): Promise<T> {
-    const product = await this.productsRepository.findOne(filter, cls);
+    const product = await this.productsRepository.findOne(parameter);
     if (product) {
       return product;
     } else {
       throw this.exceptionService.getNotFoundException(
-        ExceptionMessage.NOT_FOUND_PRODUCT,
+        ExceptionMessage.NOT_FOUND_USER,
       );
     }
   }
-
-  async count(filter?: FilterQuery<ProductDocument>): Promise<number> {
-    return this.productsRepository.count({ ...filter });
+  count(filter?: FilterQuery<ProductDocument>): Promise<number> {
+    return this.productsRepository.count(filter);
   }
-
-  async create(dto: CreateProductDTO): Promise<ProductEntity> {
-    const product = await this.productsRepository.create(dto);
-    return product;
+  create(data: CreateProductDTO): Promise<ProductEntity> {
+    return this.productsRepository.create(data);
   }
-
   async updateOne(
     filter: ProductFilter,
-    dto: UpdateProductDTO,
+    data: UpdateProductDTO,
   ): Promise<ProductEntity> {
-    const product = await this.productsRepository.updateOne(filter, dto);
+    const product = await this.productsRepository.updateOne({ filter, data });
     if (product) {
       return product;
     } else {
@@ -74,7 +57,6 @@ export class ProductsService {
       );
     }
   }
-
   async deleteOne(filter: ProductFilter): Promise<ProductFilter> {
     const { deletedCount } = await this.productsRepository.deleteOne(filter);
     if (deletedCount) {

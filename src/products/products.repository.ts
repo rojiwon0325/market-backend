@@ -1,103 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ClassConstructor, plainToInstance } from 'class-transformer';
-import { FilterQuery, Model } from 'mongoose';
-import { ProductDocument, ProductEntity } from './product.entity';
+import { Model } from 'mongoose';
 import {
-  CreateProductDTO,
-  ProductDetailEntity,
-  ProductFilter,
-  ProductSimpleEntity,
-  ProductsResponse,
-  UpdateProductDTO,
-} from './products.dto';
+  BaseRepository,
+  FindOneParameter,
+  FindParameter,
+} from 'src/interfaces/repository';
+import { ProductDetail } from './entities/product.detail';
+import { ProductDocument, ProductEntity } from './entities/product.entity';
+import { ProductSimple } from './entities/product.simple';
 
 @Injectable()
-export class ProductsRepository {
+export class ProductsRepository extends BaseRepository<ProductEntity> {
   constructor(
     @InjectModel(ProductEntity.name)
-    private productModel: Model<ProductDocument>,
-  ) {}
-
-  async findOne<T = ProductSimpleEntity | ProductDetailEntity | ProductEntity>(
-    filter: ProductFilter,
-    cls: ClassConstructor<T>,
-  ): Promise<T> {
-    const product = await this.productModel.findOne(filter);
-    if (product) {
-      return plainToInstance(cls, product.toObject(), {
-        strategy: 'excludeAll',
-      });
-    } else {
-      return undefined;
-    }
+    private readonly productModel: Model<ProductDocument>,
+  ) {
+    super(productModel, ProductEntity);
   }
 
-  async find<T = ProductSimpleEntity | ProductDetailEntity | ProductEntity>(
-    filter: Partial<ProductEntity>,
-    cls: ClassConstructor<T>,
+  find<T = ProductEntity | ProductSimple | ProductDetail>(
+    parameter: FindParameter<ProductEntity, T>,
   ): Promise<T[]> {
-    const products = (await this.productModel.find(filter)).map((product) =>
-      product.toObject(),
-    );
-    return plainToInstance(cls, products, { strategy: 'excludeAll' });
+    return super.find(parameter);
   }
-
-  async search(search: string): Promise<ProductsResponse> {
-    const regex = new RegExp(`\\b${search.split(' ').join('|')}\\b`, 'ig');
-    const products = (
-      await this.productModel.find({
-        name: {
-          $regex: regex,
-        },
-      })
-    ).map((product) => product.toObject());
-    const total = await this.count({
-      name: {
-        $regex: regex,
-      },
-    });
-    const response = {
-      total,
-      products,
-    };
-    return plainToInstance(ProductsResponse, response, {
-      strategy: 'excludeAll',
-    });
-  }
-
-  async count(filter: FilterQuery<ProductDocument>): Promise<number> {
-    return this.productModel.count(filter);
-  }
-
-  async create(dto: CreateProductDTO): Promise<ProductEntity> {
-    const product = await this.productModel.create(dto);
-    return plainToInstance(ProductEntity, product.toObject(), {
-      strategy: 'excludeAll',
-    });
-  }
-
-  async updateOne(
-    filter: ProductFilter,
-    dto: UpdateProductDTO,
-  ): Promise<ProductEntity> {
-    const product = await this.productModel.findOne(filter);
-    if (product) {
-      await this.productModel.updateOne(filter, dto);
-      return plainToInstance(
-        ProductEntity,
-        {
-          ...product.toObject(),
-          ...dto,
-        },
-        { strategy: 'excludeAll' },
-      );
-    } else {
-      return undefined;
-    }
-  }
-
-  async deleteOne(filter: ProductFilter) {
-    return this.productModel.deleteOne(filter);
+  findOne<T = ProductEntity | ProductSimple | ProductDetail>(
+    parameter: FindOneParameter<ProductEntity, T>,
+  ): Promise<T> {
+    return super.findOne(parameter);
   }
 }

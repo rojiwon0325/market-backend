@@ -1,14 +1,4 @@
-import {
-  AdminProductsResponse,
-  CreateProductDTO,
-  ProductDetailEntity,
-  ProductFilter,
-  ProductIdParam,
-  ProductsResponse,
-  SearchQuery,
-  UpdateProductDTO,
-} from './products.dto';
-import { ProductsService } from './products.service';
+import { ProductDetail } from './entities/product.detail';
 import {
   Body,
   Controller,
@@ -21,11 +11,22 @@ import {
 } from '@nestjs/common';
 import { Public } from 'src/auth/Public.decorator';
 import { UploadService } from 'src/upload/upload.service';
-import { UploadType } from 'src/upload/upload.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ProductEntity } from './product.entity';
+import { UserRole } from 'src/users/entities/user-role';
 import { Roles } from 'src/users/roles.decorator';
-import { UserRole } from 'src/users/user.entity';
+import { ProductEntity } from './entities/product.entity';
+import { ProductSimple } from './entities/product.simple';
+import {
+  CreateProductDTO,
+  ProductEntitiesResponse,
+  ProductFilter,
+  ProductIdParam,
+  ProductSimplesResponse,
+  SearchQuery,
+  UpdateProductDTO,
+} from './products.dto';
+import { ProductsService } from './products.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadType } from 'src/upload/upload.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -35,29 +36,36 @@ export class ProductsController {
   ) {}
 
   @Roles(UserRole.Admin)
-  @Get('admin')
-  async findEntity(): Promise<AdminProductsResponse> {
+  @Get('entities')
+  async findEntity(): Promise<ProductEntitiesResponse> {
     return {
       total: await this.productsService.count(),
-      products: await this.productsService.findAll(ProductEntity),
+      products: await this.productsService.find({ cls: ProductEntity }),
     };
   }
 
   @Public()
   @Get('search')
-  search(@Query() { keyword }: SearchQuery): Promise<ProductsResponse> {
-    return this.productsService.search(keyword);
+  async search(
+    @Query() { keyword }: SearchQuery,
+  ): Promise<ProductSimplesResponse> {
+    const $regex = new RegExp(`\\b${keyword.split(' ').join('|')}\\b`, 'ig');
+    return {
+      total: await this.productsService.count({ name: { $regex } }),
+      products: await this.productsService.find({
+        filter: { name: { $regex } },
+        cls: ProductSimple,
+      }),
+    };
   }
 
   @Public()
   @Get(':product_id')
-  findOne(
-    @Param() { product_id }: ProductIdParam,
-  ): Promise<ProductDetailEntity> {
-    return this.productsService.findOne(
-      { uid: product_id },
-      ProductDetailEntity,
-    );
+  findOne(@Param() { product_id }: ProductIdParam): Promise<ProductDetail> {
+    return this.productsService.findOne({
+      filter: { uid: product_id },
+      cls: ProductDetail,
+    });
   }
 
   @Roles(UserRole.Admin)
@@ -90,10 +98,10 @@ export class ProductsController {
     @Body() body: UpdateProductDTO,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ProductEntity> {
-    const product = await this.productsService.findOne(
-      { uid: product_id },
-      ProductDetailEntity,
-    );
+    const product = await this.productsService.findOne({
+      filter: { uid: product_id },
+      cls: ProductDetail,
+    });
     if (file) {
       const image_url = await this.uploadService.upload({
         type: UploadType.Image,
@@ -118,10 +126,10 @@ export class ProductsController {
   async delete(
     @Param() { product_id }: ProductIdParam,
   ): Promise<ProductFilter> {
-    const product = await this.productsService.findOne(
-      { uid: product_id },
-      ProductDetailEntity,
-    );
+    const product = await this.productsService.findOne({
+      filter: { uid: product_id },
+      cls: ProductDetail,
+    });
     if (product.image_url) {
       await this.uploadService.delete({
         file_url: product.image_url,
