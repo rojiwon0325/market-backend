@@ -1,11 +1,11 @@
-import { RolesGuard } from './roles.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchemaProvider } from './user.entity';
+import { UsersRepository } from './users.repository';
+import { UserSchemaProvider } from './entities/user.entity';
+import { RolesGuard } from './roles.guard';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { UsersRepository } from './users.repository';
 
 @Module({
   imports: [MongooseModule.forFeatureAsync([UserSchemaProvider])],

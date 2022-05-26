@@ -1,68 +1,61 @@
-import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { UserDocument, UserEntity } from './user.entity';
 import {
-  AuthenticateUserDTO,
-  UserDetail,
-  UserFilter,
-  UserPublic,
-} from './users.dto';
+  BaseRepository,
+  DeleteResult,
+  FindOneParameter,
+  FindParameter,
+} from 'src/interfaces/repository';
+import { UserDetail } from './entities/user.detail';
+import { UserDocument, UserEntity } from './entities/user.entity';
+import { UserPublic } from './entities/user.public';
+import { plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+import { AuthDTO } from './users.dto';
 
 @Injectable()
-export class UsersRepository {
+export class UsersRepository extends BaseRepository<UserEntity> {
   constructor(
     @InjectModel(UserEntity.name) private userModel: Model<UserDocument>,
-  ) {}
-
-  async findAll(): Promise<UserPublic[]> {
-    const users = (await this.userModel.find()).map((user) => user.toObject());
-    return plainToInstance(UserPublic, users, { strategy: 'excludeAll' });
+  ) {
+    super(userModel, UserEntity);
+  }
+  async find<T = UserEntity | UserPublic | UserDetail>(
+    parameter: FindParameter<UserEntity, T>,
+  ): Promise<T[]> {
+    return super.find(parameter);
   }
 
   async findOne<T = UserEntity | UserPublic | UserDetail>(
-    dto: Partial<UserEntity>,
-    cls: ClassConstructor<T>,
+    parameter: FindOneParameter<UserEntity, T>,
   ): Promise<T> {
-    const user = await this.userModel.findOne(dto);
-    if (user) {
-      return plainToInstance(cls, user.toObject(), { strategy: 'excludeAll' });
-    } else {
-      return undefined;
-    }
+    return super.findOne(parameter);
   }
 
-  async findAuthenticatedUser({
-    email,
-    password,
-  }: AuthenticateUserDTO): Promise<UserDetail | false> {
+  async findAuthenticatedOne({ email, password }: AuthDTO) {
     const user = await this.userModel.findOne({ email });
     if (user) {
       const same = await bcrypt.compare(password, user.password);
       if (!same) return false;
-      else
+      else {
         return plainToInstance(UserDetail, user.toObject(), {
           strategy: 'excludeAll',
         });
+      }
     } else {
       return undefined;
     }
   }
 
-  async count(filter: FilterQuery<UserDocument>): Promise<number> {
-    return this.userModel.count(filter);
+  async count(filter?: FilterQuery<UserDocument>): Promise<number> {
+    return super.count(filter);
+  }
+  async create(data: Partial<UserEntity>): Promise<UserEntity> {
+    return super.create(data);
   }
 
-  async create(dto: Partial<UserEntity>): Promise<UserEntity> {
-    const user = await this.userModel.create(dto);
-    return plainToInstance(UserEntity, user.toObject(), {
-      strategy: 'excludeAll',
-    });
-  }
-
-  async deleteOne(filter: UserFilter) {
-    return this.userModel.deleteOne(filter);
+  async deleteOne(filter: FilterQuery<UserDocument>): Promise<DeleteResult> {
+    return super.deleteOne(filter);
   }
 }
