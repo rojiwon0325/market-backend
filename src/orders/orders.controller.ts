@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { RefundsService } from 'src/refunds/refunds.service';
 import { UserRole } from 'src/users/entities/user-role';
 import { UserPublic } from 'src/users/entities/user.public';
 import { Roles } from 'src/users/roles.decorator';
@@ -10,12 +11,23 @@ import {
   OrderIdParam,
   OrdersResponse,
   UpdateOrderStatus,
-} from './order.dto';
+} from './orders.dto';
 import { OrdersService } from './orders.service';
 
 @Controller('orders')
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(
+    private readonly ordersService: OrdersService,
+    private readonly refundsService: RefundsService,
+  ) {}
+
+  @Get()
+  async find(@User() { uid }: UserPublic): Promise<OrdersResponse> {
+    return {
+      total: await this.ordersService.count({ customer_id: uid }),
+      orders: await this.ordersService.find({ customer_id: uid }),
+    };
+  }
 
   @Roles(UserRole.Admin)
   @Get('all')
@@ -26,13 +38,15 @@ export class OrdersController {
     };
   }
 
-  @Get()
-  async find(@User() { uid }: UserPublic): Promise<OrdersResponse> {
-    return {
-      total: await this.ordersService.count({ customer_id: uid }),
-      orders: await this.ordersService.find({ customer_id: uid }),
-    };
-  }
+  /**
+   * 내 환불 취소 내역 불러오기
+   */
+  @Get('refunds')
+  findRefund() {}
+
+  @Roles(UserRole.Admin)
+  @Get('refunds/all')
+  findRefund_admin() {}
 
   @Get(':order_id')
   findOne(
@@ -41,6 +55,12 @@ export class OrdersController {
   ): Promise<Order> {
     return this.ordersService.findOne({ uid: order_id, customer_id: uid });
   }
+
+  /**
+   * 환불 취소 정보 불러오기
+   */
+  @Get(':order_id/refund')
+  findOneRefund() {}
 
   @Post('create')
   create(
@@ -51,7 +71,7 @@ export class OrdersController {
     return this.ordersService.create(uid, items);
   }
 
-  @Post('order_id/update')
+  @Post(':order_id/update')
   update(
     @User() { uid }: UserPublic,
     @Param() { order_id }: OrderIdParam,
@@ -71,4 +91,18 @@ export class OrdersController {
   ): Promise<OrderFilter> {
     return this.ordersService.deleteOne({ customer_id: uid, uid: order_id });
   }
+
+  /**
+   * 환불/취소 요청
+   * body에 환불 or 취소 정보 담기
+   */
+  @Post(':order_id/refund/create')
+  refund() {}
+
+  /**
+   * 환불/취소 요청 처리
+   */
+  @Roles(UserRole.Admin)
+  @Post(':order_id/refund/update')
+  refund() {}
 }

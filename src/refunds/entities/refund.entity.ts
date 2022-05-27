@@ -3,16 +3,7 @@ import { Expose } from 'class-transformer';
 import { IsString, IsUUID, IsEnum, IsOptional } from 'class-validator';
 import { Document } from 'mongoose';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
-
-/**
- * 취소/환불 요청 상태(진행상태)이거나 취소/환불 처리 상태
- */
-export enum RefundStatus {
-  Canceling = 'Canceling',
-  Refunding = 'Refunding',
-  Cancelled = 'Cancelled',
-  Refunded = 'Refunded',
-}
+import { RefundStatus } from './refund-status';
 
 export type RefundDocument = RefundEntity & Document;
 

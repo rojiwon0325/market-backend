@@ -7,7 +7,7 @@ import { ProductSimple } from 'src/products/entities/product.simple';
 import { ProductsService } from 'src/products/products.service';
 import { Order } from './entities/order';
 import { OrderDocument } from './entities/order.entity';
-import { CreateOrderItem, OrderFilter, UpdateOrderStatus } from './order.dto';
+import { CreateOrderItem, OrderFilter, UpdateOrderStatus } from './orders.dto';
 import { OrdersRepository } from './orders.repository';
 
 @Injectable()

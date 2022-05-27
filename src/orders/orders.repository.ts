@@ -14,7 +14,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { Order } from './entities/order';
 import { OrderItem } from './entities/order-item';
-import { OrderIdParam } from './order.dto';
+import { OrderIdParam } from './orders.dto';
 
 @Injectable()
 export class OrdersRepository extends BaseRepository<OrderEntity> {
