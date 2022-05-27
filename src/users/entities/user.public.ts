@@ -5,4 +5,5 @@ export class UserPublic extends OmitType(UserEntity, [
   '_id',
   'email',
   'phone',
+  'password',
 ]) {}

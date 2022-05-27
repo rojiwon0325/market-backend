@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsNumber, IsUUID, ValidateNested } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNumber,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { Order } from './entities/order';
 import { OrderStatus } from './entities/order-status';
@@ -37,6 +43,7 @@ export class CreateOrderBody {
 }
 
 export class UpdateOrderStatus {
+  @IsEnum(OrderStatus, { message: ExceptionMessage.VALIDATION })
   status: OrderStatus;
 }
 
