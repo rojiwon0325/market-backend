@@ -1,17 +1,14 @@
-import {
-  CreateOrderDTO,
-  CustomerFilter,
-  OrderFilter,
-  OrderResponse,
-} from './dtos/order.dto';
-import { ProductsService } from './../products/products.service';
+import { plainToInstance } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
+import { FilterQuery } from 'mongoose';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
-import { OrdersRepository } from './orders.repository';
-import { ProductSimpleEntity } from 'src/products/products.dto';
-import { FilterQuery } from 'mongoose';
+import { ProductSimple } from 'src/products/entities/product.simple';
+import { ProductsService } from 'src/products/products.service';
+import { Order } from './entities/order';
 import { OrderDocument } from './entities/order.entity';
+import { CreateOrderItem, OrderFilter, UpdateOrderStatus } from './order.dto';
+import { OrdersRepository } from './orders.repository';
 
 @Injectable()
 export class OrdersService {
@@ -20,15 +17,11 @@ export class OrdersService {
     private readonly ordersRepository: OrdersRepository,
     private readonly exceptionService: HttpExceptionService,
   ) {}
-
-  findAll(): Promise<OrderResponse[]> {
-    return this.ordersRepository.findOrders({});
+  find(filter?: FilterQuery<OrderDocument>): Promise<Order[]> {
+    return this.ordersRepository.find({ filter, cls: Order });
   }
-  findUserOrders(dto: CustomerFilter): Promise<OrderResponse[]> {
-    return this.ordersRepository.findOrders(dto);
-  }
-  async findOrder(filter: OrderFilter): Promise<OrderResponse> {
-    const order = await this.ordersRepository.findOrder(filter);
+  async findOne(filter: OrderFilter): Promise<Order> {
+    const order = await this.ordersRepository.findOne({ filter, cls: Order });
     if (order) {
       return order;
     } else {
@@ -37,35 +30,51 @@ export class OrdersService {
       );
     }
   }
-
-  async count(filter?: FilterQuery<OrderDocument>): Promise<number> {
-    return this.ordersRepository.countOrder({ ...filter });
+  count(filter?: FilterQuery<OrderDocument>): Promise<number> {
+    return this.ordersRepository.count(filter);
   }
-
-  async createOrder(dto: CreateOrderDTO) {
-    const items = [];
-    for (const item of dto.items) {
-      const { uid, name, price } = await this.productsService.findOne(
-        { uid: item.uid },
-        ProductSimpleEntity,
-      );
-      items.push({
-        uid,
-        name,
-        price,
-        count: item.count,
-      });
-    }
-    const order = await this.ordersRepository.createOrder({
-      customer_id: dto.customer_id,
-      items,
-    });
-
+  async create(customer_id: string, items: CreateOrderItem[]): Promise<Order> {
+    const order = await this.ordersRepository.createOrder({ customer_id });
+    order.items = await Promise.all(
+      items.map(async ({ product_id, count }) => {
+        const { uid, name, price } = await this.productsService.findOne({
+          filter: { uid: product_id },
+          cls: ProductSimple,
+        });
+        return this.ordersRepository.createItem({
+          order_id: order.uid,
+          product_id: uid,
+          product_name: name,
+          product_price: price,
+          count,
+        });
+      }),
+    );
     return order;
   }
+  async updateOne(
+    filter: OrderFilter,
+    data: UpdateOrderStatus,
+  ): Promise<Order> {
+    const order = await this.ordersRepository.updateOne({ filter, data });
+    if (order) {
+      const items = this.ordersRepository.findOrderItems({
+        order_id: order.uid,
+      });
+      return plainToInstance(
+        Order,
+        { ...order, items },
+        { strategy: 'excludeAll' },
+      );
+    } else {
+      throw this.exceptionService.getNotFoundException(
+        ExceptionMessage.NOT_FOUND,
+      );
+    }
+  }
 
-  async deleteOrder(filter: OrderFilter) {
-    const { deletedCount } = await this.ordersRepository.deleteOrder(filter);
+  async deleteOne(filter: OrderFilter): Promise<OrderFilter> {
+    const { deletedCount } = await this.ordersRepository.deleteOne(filter);
     if (deletedCount) {
       return filter;
     } else {

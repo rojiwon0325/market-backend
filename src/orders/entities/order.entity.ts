@@ -4,16 +4,7 @@ import { IsDate, IsEnum, IsNumber, IsOptional, IsUUID } from 'class-validator';
 import { Document } from 'mongoose';
 import * as MUUID from 'uuid-mongodb';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
-
-export enum OrderStatus {
-  Pending = 'Pending',
-  Delivering = 'Delivering',
-  Delivered = 'Delivered',
-  Canceling = 'Canceling',
-  Cancelled = 'Cancelled',
-  Refunding = 'Refunding',
-  Refunded = 'Refunded',
-}
+import { OrderStatus } from './order-status';
 
 export type OrderDocument = OrderEntity & Document;
 
