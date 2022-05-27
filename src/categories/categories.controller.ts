@@ -1,19 +1,18 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Public } from 'src/auth/Public.decorator';
-import {
-  ProductSimpleEntity,
-  ProductsResponse,
-} from 'src/products/products.dto';
+import { ProductSimple } from 'src/products/entities/product.simple';
+import { ProductSimplesResponse } from 'src/products/products.dto';
 import { ProductsService } from 'src/products/products.service';
+import { UserRole } from 'src/users/entities/user-role';
 import { Roles } from 'src/users/roles.decorator';
-import { UserRole } from 'src/users/user.entity';
 import {
   CategoriesResponse,
-  CategoryDTO,
   CategoryIdParam,
+  CreateCategoryDTO,
+  UpdateCategoryDTO,
 } from './categories.dto';
 import { CategoriesService } from './categories.service';
-import { CategoryEntity } from './category.entity';
+import { CategoryEntity } from './entities/category.entity';
 
 @Controller('categories')
 export class CategoriesController {
@@ -24,10 +23,10 @@ export class CategoriesController {
 
   @Public()
   @Get()
-  async findAll(): Promise<CategoriesResponse> {
+  async find(): Promise<CategoriesResponse> {
     return {
       total: await this.categoriesService.count(),
-      categories: await this.categoriesService.findAll(),
+      categories: await this.categoriesService.find(),
     };
   }
 
@@ -35,25 +34,28 @@ export class CategoriesController {
   @Get(':category_id/products')
   async findProducts(
     @Param() { category_id }: CategoryIdParam,
-  ): Promise<ProductsResponse> {
+  ): Promise<ProductSimplesResponse> {
     return {
       total: await this.productsService.count({ category_id }),
-      products: await this.productsService.find(
-        { category_id },
-        ProductSimpleEntity,
-      ),
+      products: await this.productsService.find({
+        filter: { category_id },
+        cls: ProductSimple,
+      }),
     };
   }
 
   @Roles(UserRole.Admin)
   @Post('create')
-  create(@Body() body: CategoryDTO): Promise<CategoryEntity> {
+  create(@Body() body: CreateCategoryDTO): Promise<CategoryEntity> {
     return this.categoriesService.create(body);
   }
 
   @Roles(UserRole.Admin)
   @Post(':category_id/update')
-  update(@Param() { category_id }: CategoryIdParam, @Body() body: CategoryDTO) {
+  update(
+    @Param() { category_id }: CategoryIdParam,
+    @Body() body: UpdateCategoryDTO,
+  ) {
     return this.categoriesService.updateOne({ uid: category_id }, body);
   }
 

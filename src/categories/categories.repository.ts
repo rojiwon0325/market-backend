@@ -1,65 +1,31 @@
-import { plainToInstance } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
-import { CategoryDocument, CategoryEntity } from './category.entity';
-import { CategoryFilter, CategoryDTO } from './categories.dto';
+import { Model } from 'mongoose';
+import {
+  BaseRepository,
+  FindOneParameter,
+  FindParameter,
+} from 'src/interfaces/repository';
+import { CategoryDocument, CategoryEntity } from './entities/category.entity';
+import { Category } from './entities/category';
 
 @Injectable()
-export class CategoriesRepository {
+export class CategoriesRepository extends BaseRepository<CategoryEntity> {
   constructor(
     @InjectModel(CategoryEntity.name)
-    private categoryModel: Model<CategoryDocument>,
-  ) {}
-
-  async find(): Promise<CategoryEntity[]> {
-    const categories = (await this.categoryModel.find()).map((category) =>
-      category.toObject(),
-    );
-    return plainToInstance(CategoryEntity, categories, {
-      strategy: 'excludeAll',
-    });
-  }
-  async findOne(filter: CategoryDTO | CategoryFilter): Promise<CategoryEntity> {
-    const category = await this.categoryModel.findOne(filter);
-    if (category) {
-      return plainToInstance(CategoryEntity, category.toObject(), {
-        strategy: 'excludeAll',
-      });
-    } else {
-      return undefined;
-    }
-  }
-  async count(filter: FilterQuery<CategoryDocument>): Promise<number> {
-    return this.categoryModel.count(filter);
+    private readonly categoryModel: Model<CategoryDocument>,
+  ) {
+    super(categoryModel, CategoryEntity);
   }
 
-  async create(dto: CategoryDTO): Promise<CategoryEntity> {
-    const category = await this.categoryModel.create(dto);
-    return plainToInstance(CategoryEntity, category.toObject(), {
-      strategy: 'excludeAll',
-    });
+  async find<T = Category>(
+    parameter: FindParameter<CategoryEntity, T>,
+  ): Promise<T[]> {
+    return super.find(parameter);
   }
-  async updateOne(
-    filter: CategoryFilter,
-    dto: CategoryDTO,
-  ): Promise<CategoryEntity> {
-    const category = await this.categoryModel.findOne(filter);
-    if (category) {
-      await this.categoryModel.updateOne(filter, dto);
-      return plainToInstance(
-        CategoryEntity,
-        {
-          ...category.toObject(),
-          ...dto,
-        },
-        { strategy: 'excludeAll' },
-      );
-    } else {
-      return undefined;
-    }
-  }
-  async deleteOne(filter: CategoryFilter) {
-    return this.categoryModel.deleteOne(filter);
+  findOne<T = Category>(
+    parameter: FindOneParameter<CategoryEntity, T>,
+  ): Promise<T> {
+    return super.findOne(parameter);
   }
 }

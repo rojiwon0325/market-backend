@@ -1,12 +1,13 @@
-import { CategoryEntity } from './category.entity';
+import { PartialType, PickType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNumber, IsString, IsUUID, ValidateNested } from 'class-validator';
+import { IsInt, IsUUID, ValidateNested } from 'class-validator';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
+import { Category } from './entities/category';
+import { CategoryEntity } from './entities/category.entity';
 
-export class CategoryDTO {
-  @IsString({ message: ExceptionMessage.VALIDATION })
-  @Type(() => String)
-  name: string;
+export class CategoryFilter {
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
+  uid: string;
 }
 
 export class CategoryIdParam {
@@ -14,16 +15,21 @@ export class CategoryIdParam {
   category_id: string;
 }
 
-export class CategoryFilter {
-  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
-  uid: string;
-}
-
 export class CategoriesResponse {
-  @IsNumber()
+  @IsInt()
   total: number;
 
   @ValidateNested({ each: true })
-  @Type(() => CategoryEntity)
-  categories: CategoryEntity[];
+  @Type(() => Category)
+  categories: Category[];
 }
+
+export class CreateCategoryDTO extends PickType(CategoryEntity, [
+  'name',
+  'image_url',
+]) {}
+
+export class UpdateCategoryDTO extends PickType(PartialType(CategoryEntity), [
+  'name',
+  'image_url',
+]) {}

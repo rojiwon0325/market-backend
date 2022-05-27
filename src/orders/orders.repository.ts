@@ -27,10 +27,10 @@ export class OrdersRepository extends BaseRepository<OrderEntity> {
     super(orderModel, OrderEntity);
   }
 
-  async find<Order>({
+  async find<T = Order>({
     filter,
     cls,
-  }: FindParameter<OrderEntity, Order>): Promise<Order[]> {
+  }: FindParameter<OrderEntity, T>): Promise<T[]> {
     const orders = await this.orderModel.find(filter);
     const result = await Promise.all(
       orders.map(async (order) => {
@@ -51,10 +51,10 @@ export class OrdersRepository extends BaseRepository<OrderEntity> {
     return plainToInstance(OrderItem, items, { strategy: 'excludeAll' });
   }
 
-  async findOne<Order>({
+  async findOne<T = Order>({
     filter,
     cls,
-  }: FindOneParameter<OrderEntity, Order>): Promise<Order> {
+  }: FindOneParameter<OrderEntity, T>): Promise<T> {
     const order = await this.orderModel.findOne(filter);
     if (order) {
       const items = await this.orderItemModel.find({ order_id: order.uid });
