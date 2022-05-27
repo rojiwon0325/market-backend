@@ -7,6 +7,7 @@ import { UserRole } from 'src/users/entities/user-role';
 import { Roles } from 'src/users/roles.decorator';
 import {
   CategoriesResponse,
+  CategoryFilter,
   CategoryIdParam,
   CreateCategoryDTO,
   UpdateCategoryDTO,
@@ -55,13 +56,13 @@ export class CategoriesController {
   update(
     @Param() { category_id }: CategoryIdParam,
     @Body() body: UpdateCategoryDTO,
-  ) {
+  ): Promise<CategoryEntity> {
     return this.categoriesService.updateOne({ uid: category_id }, body);
   }
 
   @Roles(UserRole.Admin)
   @Post(':category_id/delete')
-  delete(@Param() { category_id }: CategoryIdParam) {
+  delete(@Param() { category_id }: CategoryIdParam): Promise<CategoryFilter> {
     return this.categoriesService.deleteOne({ uid: category_id });
   }
 }
