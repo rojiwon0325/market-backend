@@ -9,6 +9,7 @@ import {
   OrderFilter,
   OrderIdParam,
   OrdersResponse,
+  UpdateOrderStatus,
 } from './order.dto';
 import { OrdersService } from './orders.service';
 
@@ -48,6 +49,19 @@ export class OrdersController {
     { items }: CreateOrderBody,
   ): Promise<Order> {
     return this.ordersService.create(uid, items);
+  }
+
+  @Post('order_id/update')
+  update(
+    @User() { uid }: UserPublic,
+    @Param() { order_id }: OrderIdParam,
+    @Body()
+    body: UpdateOrderStatus,
+  ) {
+    return this.ordersService.updateOne(
+      { customer_id: uid, uid: order_id },
+      body,
+    );
   }
 
   @Post(':order_id/delete')
