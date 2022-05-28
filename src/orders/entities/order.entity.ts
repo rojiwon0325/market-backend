@@ -1,6 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Expose } from 'class-transformer';
-import { IsDate, IsEnum, IsNumber, IsOptional, IsUUID } from 'class-validator';
+import { Expose, Type } from 'class-transformer';
+import {
+  IsBoolean,
+  IsDate,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsUUID,
+} from 'class-validator';
 import { Document } from 'mongoose';
 import * as MUUID from 'uuid-mongodb';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
@@ -33,6 +40,12 @@ export class OrderEntity {
   @Expose()
   @Prop({ type: String, enum: OrderStatus, default: OrderStatus.Pending })
   status: OrderStatus;
+
+  @IsBoolean({ message: ExceptionMessage.VALIDATION })
+  @Type(() => Boolean)
+  @Expose()
+  @Prop({ required: true, default: true })
+  visible: boolean;
 
   @IsDate()
   @Expose()

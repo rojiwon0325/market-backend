@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsEnum,
   IsInt,
   IsNumber,
@@ -45,6 +46,12 @@ export class CreateOrderBody {
   @ValidateNested({ each: true, message: ExceptionMessage.VALIDATION })
   @Type(() => CreateOrderItem)
   items: CreateOrderItem[];
+}
+
+export class UpdateOrderVisible {
+  @IsBoolean({ message: ExceptionMessage.VALIDATION })
+  @Type(() => Boolean)
+  visible: boolean;
 }
 
 export class UpdateOrderStatus {

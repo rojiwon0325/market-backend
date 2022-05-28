@@ -5,7 +5,7 @@ import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { OrderItem } from './order-item';
 import { OrderEntity } from './order.entity';
 
-export class Order extends OmitType(OrderEntity, ['_id']) {
+export class Order extends OmitType(OrderEntity, ['_id', 'visible']) {
   @ValidateNested({ each: true, message: ExceptionMessage.VALIDATION })
   @Type(() => OrderItem)
   @Expose()

@@ -11,6 +11,7 @@ import {
   CreateOrderItem,
   OrderFilter,
   UpdateOrderStatus,
+  UpdateOrderVisible,
 } from './orders.dto';
 import { OrdersRepository } from './orders.repository';
 import { Serializer } from 'src/decorators/Serializer';
@@ -65,7 +66,7 @@ export class OrdersService {
   @Serializer(Order)
   async updateOne(
     filter: OrderFilter | AdminOrderFilter,
-    data: UpdateOrderStatus,
+    data: UpdateOrderStatus | UpdateOrderVisible,
   ): Promise<Order> {
     const order = await this.ordersRepository.updateOne({ filter, data });
     if (order) {

@@ -1,7 +1,4 @@
-import { Refund } from 'src/refunds/entities/refund';
-import { plainToInstance } from 'class-transformer';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { RefundsService } from 'src/refunds/refunds.service';
 import { UserRole } from 'src/users/entities/user-role';
 import { UserPublic } from 'src/users/entities/user.public';
 import { Roles } from 'src/users/roles.decorator';
@@ -9,13 +6,11 @@ import { User } from 'src/users/user.decorator';
 import { Order } from './entities/order';
 import {
   CreateOrderBody,
-  OrderFilter,
   OrderIdParam,
   OrdersResponse,
   UpdateOrderStatus,
 } from './orders.dto';
 import { OrdersService } from './orders.service';
-import { CreateRefundDTO, UpdateRefundDTO } from 'src/refunds/refunds.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -24,8 +19,14 @@ export class OrdersController {
   @Get()
   async find(@User() { uid }: UserPublic): Promise<OrdersResponse> {
     return {
-      total: await this.ordersService.count({ customer_id: uid }),
-      orders: await this.ordersService.find({ customer_id: uid }),
+      total: await this.ordersService.count({
+        customer_id: uid,
+        visible: true,
+      }),
+      orders: await this.ordersService.find({
+        customer_id: uid,
+        visible: true,
+      }),
     };
   }
 
@@ -120,8 +121,11 @@ export class OrdersController {
   async delete(
     @User() { uid }: UserPublic,
     @Param() { order_id }: OrderIdParam,
-  ): Promise<OrderFilter> {
-    return this.ordersService.deleteOne({ customer_id: uid, uid: order_id });
+  ): Promise<Order> {
+    return this.ordersService.updateOne(
+      { customer_id: uid, uid: order_id },
+      { visible: false },
+    );
   }
 
   /**
