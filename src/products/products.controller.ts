@@ -36,8 +36,8 @@ export class ProductsController {
   ) {}
 
   @Roles(UserRole.Admin)
-  @Get('entities')
-  async findEntity(): Promise<ProductEntitiesResponse> {
+  @Get('all')
+  async find_admin(): Promise<ProductEntitiesResponse> {
     return {
       total: await this.productsService.count(),
       products: await this.productsService.find({ cls: ProductEntity }),
