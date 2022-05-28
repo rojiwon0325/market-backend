@@ -1,4 +1,3 @@
-import { plainToInstance } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
 import { FilterQuery } from 'mongoose';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
@@ -7,8 +6,14 @@ import { ProductSimple } from 'src/products/entities/product.simple';
 import { ProductsService } from 'src/products/products.service';
 import { Order } from './entities/order';
 import { OrderDocument } from './entities/order.entity';
-import { CreateOrderItem, OrderFilter, UpdateOrderStatus } from './orders.dto';
+import {
+  AdminOrderFilter,
+  CreateOrderItem,
+  OrderFilter,
+  UpdateOrderStatus,
+} from './orders.dto';
 import { OrdersRepository } from './orders.repository';
+import { Serializer } from 'src/decorators/Serializer';
 
 @Injectable()
 export class OrdersService {
@@ -17,9 +22,11 @@ export class OrdersService {
     private readonly ordersRepository: OrdersRepository,
     private readonly exceptionService: HttpExceptionService,
   ) {}
+
   find(filter?: FilterQuery<OrderDocument>): Promise<Order[]> {
     return this.ordersRepository.find({ filter, cls: Order });
   }
+
   async findOne(filter: OrderFilter): Promise<Order> {
     const order = await this.ordersRepository.findOne({ filter, cls: Order });
     if (order) {
@@ -30,9 +37,11 @@ export class OrdersService {
       );
     }
   }
+
   count(filter?: FilterQuery<OrderDocument>): Promise<number> {
     return this.ordersRepository.count(filter);
   }
+
   async create(customer_id: string, items: CreateOrderItem[]): Promise<Order> {
     const order = await this.ordersRepository.createOrder({ customer_id });
     order.items = await Promise.all(
@@ -52,20 +61,18 @@ export class OrdersService {
     );
     return order;
   }
+
+  @Serializer(Order)
   async updateOne(
-    filter: OrderFilter,
+    filter: OrderFilter | AdminOrderFilter,
     data: UpdateOrderStatus,
   ): Promise<Order> {
     const order = await this.ordersRepository.updateOne({ filter, data });
     if (order) {
-      const items = this.ordersRepository.findOrderItems({
+      const items = await this.ordersRepository.findOrderItems({
         order_id: order.uid,
       });
-      return plainToInstance(
-        Order,
-        { ...order, items },
-        { strategy: 'excludeAll' },
-      );
+      return { ...order, items };
     } else {
       throw this.exceptionService.getNotFoundException(
         ExceptionMessage.NOT_FOUND,

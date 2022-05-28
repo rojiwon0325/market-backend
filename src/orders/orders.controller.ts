@@ -1,3 +1,5 @@
+import { Refund } from 'src/refunds/entities/refund';
+import { plainToInstance } from 'class-transformer';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { RefundsService } from 'src/refunds/refunds.service';
 import { UserRole } from 'src/users/entities/user-role';
@@ -13,13 +15,11 @@ import {
   UpdateOrderStatus,
 } from './orders.dto';
 import { OrdersService } from './orders.service';
+import { CreateRefundDTO, UpdateRefundDTO } from 'src/refunds/refunds.dto';
 
 @Controller('orders')
 export class OrdersController {
-  constructor(
-    private readonly ordersService: OrdersService,
-    private readonly refundsService: RefundsService,
-  ) {}
+  constructor(private readonly ordersService: OrdersService) {}
 
   @Get()
   async find(@User() { uid }: UserPublic): Promise<OrdersResponse> {
@@ -40,14 +40,38 @@ export class OrdersController {
 
   /**
    * 내 환불 취소 내역 불러오기
-   */
+   
   @Get('refunds')
-  findRefund() {}
+  async findRefund(@User() { uid }: UserPublic): Promise<Refund[]> {
+    const refunds = await this.refundsService.find({ customer_id: uid });
+    const result = await Promise.all(
+      refunds.map(async (refund) => {
+        const order = await this.ordersService.findOne({
+          uid: refund.order_id,
+          customer_id: uid,
+        });
+        return { ...refund, order };
+      }),
+    );
+    return plainToInstance(Refund, result, { strategy: 'excludeAll' });
+  }
 
   @Roles(UserRole.Admin)
   @Get('refunds/all')
-  findRefund_admin() {}
-
+  async findRefund_admin(): Promise<Refund[]> {
+    const refunds = await this.refundsService.find();
+    const result = await Promise.all(
+      refunds.map(async (refund) => {
+        const order = await this.ordersService.findOne({
+          uid: refund.order_id,
+          customer_id: refund.customer_id,
+        });
+        return { ...refund, order };
+      }),
+    );
+    return plainToInstance(Refund, result, { strategy: 'excludeAll' });
+  }
+*/
   @Get(':order_id')
   findOne(
     @User() { uid }: UserPublic,
@@ -58,9 +82,20 @@ export class OrdersController {
 
   /**
    * 환불 취소 정보 불러오기
-   */
+   
   @Get(':order_id/refund')
-  findOneRefund() {}
+  async findOneRefund(@Param() { order_id }: OrderIdParam) {
+    const refund = await this.refundsService.findOne({ order_id });
+    const order = await this.ordersService.findOne({
+      uid: refund.order_id,
+      customer_id: refund.customer_id,
+    });
+    return plainToInstance(
+      Refund,
+      { ...refund, order },
+      { strategy: 'excludeAll' },
+    );
+  }*/
 
   @Post('create')
   create(
@@ -71,17 +106,14 @@ export class OrdersController {
     return this.ordersService.create(uid, items);
   }
 
+  @Roles(UserRole.Admin)
   @Post(':order_id/update')
   update(
-    @User() { uid }: UserPublic,
     @Param() { order_id }: OrderIdParam,
     @Body()
     body: UpdateOrderStatus,
   ) {
-    return this.ordersService.updateOne(
-      { customer_id: uid, uid: order_id },
-      body,
-    );
+    return this.ordersService.updateOne({ uid: order_id }, body);
   }
 
   @Post(':order_id/delete')
@@ -95,14 +127,44 @@ export class OrdersController {
   /**
    * 환불/취소 요청
    * body에 환불 or 취소 정보 담기
-   */
+   
   @Post(':order_id/refund/create')
-  refund() {}
+  async createRefund(
+    @User() { uid }: UserPublic,
+    @Param() { order_id }: OrderIdParam,
+    @Body() body: CreateRefundDTO,
+  ): Promise<Refund> {
+    const order = await this.ordersService.findOne({
+      customer_id: uid,
+      uid: order_id,
+    });
+    const refund = await this.refundsService.create(body);
+    return plainToInstance(
+      Refund,
+      { ...refund, order },
+      { strategy: 'excludeAll' },
+    );
+  }
 
   /**
    * 환불/취소 요청 처리
-   */
+   
   @Roles(UserRole.Admin)
   @Post(':order_id/refund/update')
-  refund() {}
+  async refund(
+    @Param() { order_id }: OrderIdParam,
+    @Body() body: UpdateRefundDTO,
+  ): Promise<any> {
+    const refund = await this.refundsService.updateOne({ order_id }, body);
+    const order = await this.ordersService.findOne({
+      uid: order_id,
+      customer_id: refund.customer_id,
+    });
+
+    return plainToInstance(
+      Refund,
+      { ...refund, order },
+      { strategy: 'excludeAll' },
+    );
+  }*/
 }

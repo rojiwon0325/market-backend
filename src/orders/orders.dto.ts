@@ -20,6 +20,11 @@ export class CustomerFilter {
   customer_id: string;
 }
 
+export class AdminOrderFilter {
+  @IsUUID(4, { message: ExceptionMessage.VALIDATION })
+  uid: string;
+}
+
 export class OrderFilter {
   @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   uid: string;

@@ -1,14 +1,14 @@
 import { Type } from 'class-transformer';
 import { IsString, IsUUID, ValidateNested } from 'class-validator';
-import { UserEntity } from 'src/users/user.entity';
+import { UserDetail } from 'src/users/entities/user.detail';
 
 export class LoginDTO {
   @IsString()
   access_token: string;
 
   @ValidateNested()
-  @Type(() => UserEntity)
-  user: UserEntity;
+  @Type(() => UserDetail)
+  user: UserDetail;
 }
 
 export class JWTPayloadDTO {
