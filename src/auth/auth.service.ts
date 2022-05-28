@@ -1,13 +1,13 @@
 import { plainToInstance } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from 'src/users/user.entity';
-import { AuthenticateUserDTO } from 'src/users/users.dto';
 import { UsersService } from 'src/users/users.service';
 import { validate } from 'class-validator';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { JWTPayloadDTO, LoginDTO } from './auth.dto';
 import { JwtService } from '@nestjs/jwt';
+import { AuthDTO } from 'src/users/users.dto';
+import { UserDetail } from 'src/users/entities/user.detail';
 
 @Injectable()
 export class AuthService {
@@ -17,8 +17,8 @@ export class AuthService {
     private readonly httpExceptionService: HttpExceptionService,
   ) {}
 
-  async authenticate(dto: AuthenticateUserDTO): Promise<UserEntity> {
-    const data = plainToInstance(AuthenticateUserDTO, dto);
+  async authenticate(dto: AuthDTO): Promise<UserDetail> {
+    const data = plainToInstance(AuthDTO, dto);
     const errors = await validate(data);
     for (const error of errors) {
       const message = Object.entries(
@@ -26,10 +26,10 @@ export class AuthService {
       )[0][1] as ExceptionMessage;
       throw this.httpExceptionService.getBadRequestException(message);
     }
-    return this.usersService.findAuthenticatedUser(data);
+    return this.usersService.findAuthenticatedOne(data);
   }
 
-  async signIn(user: UserEntity): Promise<LoginDTO> {
+  async signIn(user: UserDetail): Promise<LoginDTO> {
     const payload = { uid: user.uid };
     return {
       access_token: this.jwtService.sign(payload),

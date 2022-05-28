@@ -13,12 +13,12 @@ async function bootstrap() {
       hidePoweredBy: true,
     }),
   );
-
+  /**
   app.enableCors({
     origin: process.env.CLIENT_DOMAIN,
     credentials: true,
   });
-
+*/
   app.use(cookieParser());
 
   await app.listen(process.env.PORT);

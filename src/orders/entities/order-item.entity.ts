@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Expose, Type } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { IsInt, IsNumber, IsString, IsUUID, Min } from 'class-validator';
 import { Document } from 'mongoose';
 import * as MUUID from 'uuid-mongodb';
@@ -9,7 +9,7 @@ export type OrderItemDocument = OrderItemEntity & Document;
 
 @Schema()
 export class OrderItemEntity {
-  @Exclude()
+  @Expose()
   _id: string;
 
   @IsUUID(4, { message: ExceptionMessage.VALIDATION })

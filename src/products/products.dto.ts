@@ -1,64 +1,9 @@
-import { ProductEntity } from './product.entity';
-import { OmitType, PickType } from '@nestjs/swagger';
-import {
-  IsInt,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUrl,
-  IsUUID,
-  ValidateNested,
-} from 'class-validator';
-import { Exclude, Expose, Type } from 'class-transformer';
+import { PartialType, PickType } from '@nestjs/swagger';
+import { Expose, Type } from 'class-transformer';
+import { IsNumber, IsString, IsUUID, ValidateNested } from 'class-validator';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
-
-export class ProductSimpleEntity extends PickType(ProductEntity, [
-  'uid',
-  'name',
-  'price',
-  'image_url',
-]) {}
-
-export class ProductDetailEntity extends OmitType(ProductEntity, [
-  '_id',
-  'category_id',
-]) {
-  @Exclude()
-  _id: string;
-
-  @Exclude()
-  category_id: string;
-}
-
-export class CreateProductDTO extends PickType(ProductEntity, [
-  'category_id',
-  'name',
-  'price',
-]) {}
-
-export class UpdateProductDTO {
-  @IsInt()
-  @IsOptional()
-  @Type(() => Number)
-  price?: number;
-
-  @IsString()
-  @IsOptional()
-  @Type(() => String)
-  name?: string;
-
-  @IsUUID()
-  @IsOptional()
-  category_id?: string;
-
-  @IsString()
-  @IsOptional()
-  description?: string;
-
-  @IsUrl()
-  @IsOptional()
-  image_url?: string;
-}
+import { ProductEntity } from './entities/product.entity';
+import { ProductSimple } from './entities/product.simple';
 
 export class ProductIdParam {
   @IsUUID(4, { message: ExceptionMessage.VALIDATION })
@@ -69,25 +14,37 @@ export class ProductFilter {
   @IsUUID(4, { message: ExceptionMessage.VALIDATION })
   uid: string;
 }
-
 export class SearchQuery {
   @IsString()
   @Type(() => String)
   keyword: string;
 }
 
-export class ProductsResponse {
+export class CreateProductDTO extends PickType(ProductEntity, [
+  'category_id',
+  'name',
+  'price',
+]) {}
+
+export class UpdateProductDTO extends PickType(PartialType(ProductEntity), [
+  'category_id',
+  'description',
+  'image_url',
+  'name',
+  'price',
+]) {}
+
+export class ProductSimplesResponse {
   @IsNumber()
   @Expose()
   total: number;
 
   @ValidateNested({ each: true })
-  @Type(() => ProductSimpleEntity)
+  @Type(() => ProductSimple)
   @Expose()
-  products: ProductSimpleEntity[];
+  products: ProductSimple[];
 }
-
-export class AdminProductsResponse {
+export class ProductEntitiesResponse {
   @IsNumber()
   @Expose()
   total: number;

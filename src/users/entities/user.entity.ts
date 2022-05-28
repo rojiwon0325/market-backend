@@ -5,11 +5,7 @@ import { Document } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import * as MUUID from 'uuid-mongodb';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
-
-export enum UserRole {
-  Admin = 'Admin',
-  Customer = 'Customer',
-}
+import { UserRole } from './user-role';
 
 export type UserDocument = UserEntity & Document;
 

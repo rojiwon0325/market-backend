@@ -1,10 +1,10 @@
-import { UsersService } from './../../users/users.service';
+import { UsersService } from 'src/users/users.service';
 import { ExtractJwt, Strategy, StrategyOptions } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import { JWTPayloadDTO } from '../auth.dto';
-import { UserEntity } from 'src/users/user.entity';
+import { UserDetail } from 'src/users/entities/user.detail';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super(options);
   }
 
-  validate({ uid }: JWTPayloadDTO): Promise<UserEntity> {
-    return this.usersService.findOne({ uid }, UserEntity);
+  validate({ uid }: JWTPayloadDTO): Promise<UserDetail> {
+    return this.usersService.findOne({ filter: { uid }, cls: UserDetail });
   }
 }

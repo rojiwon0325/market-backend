@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { OrdersService } from './orders.service';
-import { OrdersController } from './orders.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { OrderSchemaProvider } from './entities/order.entity';
-import { OrderItemSchemaProvider } from './entities/order-item.entity';
-import { OrdersRepository } from './orders.repository';
 import { ProductsModule } from 'src/products/products.module';
+import { OrderItemSchemaProvider } from './entities/order-item.entity';
+import { OrderSchemaProvider } from './entities/order.entity';
+import { OrdersController } from './orders.controller';
+import { OrdersRepository } from './orders.repository';
+import { OrdersService } from './orders.service';
 
 @Module({
   imports: [
@@ -14,5 +14,6 @@ import { ProductsModule } from 'src/products/products.module';
   ],
   providers: [OrdersService, OrdersRepository],
   controllers: [OrdersController],
+  exports: [OrdersService],
 })
 export class OrdersModule {}

@@ -1,17 +1,13 @@
-import { HttpExceptionService } from 'src/httpException/http-exception.service';
-import { Injectable } from '@nestjs/common';
-import { UserDocument, UserEntity } from './user.entity';
-import {
-  AuthenticateUserDTO,
-  CreateUserDTO,
-  FindOneUserDTO,
-  UserDetail,
-  UserPublic,
-} from './users.dto';
-import { UsersRepository } from './users.repository';
-import { ExceptionMessage } from 'src/httpException/exception-message.enum';
-import { ClassConstructor } from 'class-transformer';
 import { FilterQuery } from 'mongoose';
+import { Injectable } from '@nestjs/common';
+import { ExceptionMessage } from 'src/httpException/exception-message.enum';
+import { HttpExceptionService } from 'src/httpException/http-exception.service';
+import { UserDetail } from './entities/user.detail';
+import { UserDocument, UserEntity } from './entities/user.entity';
+import { UserPublic } from './entities/user.public';
+import { AuthDTO, CreateUserDTO } from './users.dto';
+import { UsersRepository } from './users.repository';
+import { FindOneParameter, FindParameter } from 'src/interfaces/repository';
 
 @Injectable()
 export class UsersService {
@@ -20,40 +16,25 @@ export class UsersService {
     private readonly exceptionService: HttpExceptionService,
   ) {}
 
-  find(): Promise<UserPublic[]> {
-    return this.usersRepository.findAll();
+  find<T = UserEntity | UserPublic | UserDetail>(
+    parameter: FindParameter<UserEntity, T>,
+  ): Promise<T[]> {
+    return this.usersRepository.find(parameter);
   }
-
-  async count(filter?: FilterQuery<UserDocument>): Promise<number> {
-    return this.usersRepository.count({ ...filter });
-  }
-
-  async create(dto: CreateUserDTO): Promise<UserEntity> {
-    const exist = await this.usersRepository.findOne(
-      { email: dto.email },
-      UserPublic,
-    );
-    if (exist)
-      throw this.exceptionService.getBadRequestException(
-        ExceptionMessage.USED_EMAIL,
-      );
-    return this.usersRepository.create(dto);
-  }
-
   async findOne<T = UserEntity | UserPublic | UserDetail>(
-    filter: FindOneUserDTO,
-    cls: ClassConstructor<T>,
+    parameter: FindOneParameter<UserEntity, T>,
   ): Promise<T> {
-    const user = await this.usersRepository.findOne(filter, cls);
+    const user = await this.usersRepository.findOne(parameter);
     if (user) {
       return user;
-    } else
+    } else {
       throw this.exceptionService.getNotFoundException(
         ExceptionMessage.NOT_FOUND_USER,
       );
+    }
   }
-  async findAuthenticatedUser(dto: AuthenticateUserDTO): Promise<UserEntity> {
-    const user = await this.usersRepository.findAuthenticatedUser(dto);
+  async findAuthenticatedOne(dto: AuthDTO): Promise<UserDetail> {
+    const user = await this.usersRepository.findAuthenticatedOne(dto);
     if (user === false) {
       throw this.exceptionService.getUnauthorizedException(
         ExceptionMessage.INCORRECT_PASSWORD,
@@ -66,17 +47,32 @@ export class UsersService {
       );
     }
   }
+  async count(filter?: FilterQuery<UserDocument>): Promise<number> {
+    return this.usersRepository.count(filter);
+  }
 
-  async delete({ email, password }: AuthenticateUserDTO): Promise<UserEntity> {
-    const user = await this.findAuthenticatedUser({ email, password });
+  async create(dto: CreateUserDTO): Promise<UserEntity> {
+    const exist = await this.usersRepository.findOne({
+      filter: { email: dto.email },
+      cls: UserPublic,
+    });
+    if (exist)
+      throw this.exceptionService.getBadRequestException(
+        ExceptionMessage.USED_EMAIL,
+      );
+    return this.usersRepository.create(dto);
+  }
+  async deleteOne({ email, password }: AuthDTO): Promise<UserDetail> {
+    const user = await this.findAuthenticatedOne({ email, password });
     const { deletedCount } = await this.usersRepository.deleteOne({
       uid: user.uid,
     });
     if (deletedCount) {
       return user;
-    } else
+    } else {
       throw this.exceptionService.getNotFoundException(
         ExceptionMessage.NOT_DELETED,
       );
+    }
   }
 }
