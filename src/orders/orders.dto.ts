@@ -1,15 +1,9 @@
+import { PickType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import {
-  IsBoolean,
-  IsEnum,
-  IsInt,
-  IsNumber,
-  IsUUID,
-  ValidateNested,
-} from 'class-validator';
+import { IsInt, IsNumber, IsUUID, ValidateNested } from 'class-validator';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { Order } from './entities/order';
-import { OrderStatus } from './entities/order-status';
+import { OrderEntity } from './entities/order.entity';
 
 export class OrderIdParam {
   @IsUUID(4, { message: ExceptionMessage.VALIDATION })
@@ -48,16 +42,9 @@ export class CreateOrderBody {
   items: CreateOrderItem[];
 }
 
-export class UpdateOrderVisible {
-  @IsBoolean({ message: ExceptionMessage.VALIDATION })
-  @Type(() => Boolean)
-  visible: boolean;
-}
+export class UpdateOrderVisible extends PickType(OrderEntity, ['visible']) {}
 
-export class UpdateOrderStatus {
-  @IsEnum(OrderStatus, { message: ExceptionMessage.VALIDATION })
-  status: OrderStatus;
-}
+export class UpdateOrderStatus extends PickType(OrderEntity, ['status']) {}
 
 export class OrdersResponse {
   @IsNumber()

@@ -6,7 +6,7 @@ import { User } from 'src/users/user.decorator';
 import { Refund } from './entities/refund';
 import { RefundsService } from './refunds.service';
 import { OrderIdParam } from 'src/orders/orders.dto';
-import { CreateRefundBody, UpdateRefundDTO } from './refunds.dto';
+import { CreateRefundBody, UpdateRefundStatus } from './refunds.dto';
 
 @Controller('refunds')
 export class RefundsController {
@@ -14,7 +14,7 @@ export class RefundsController {
 
   @Get()
   find(@User() { uid }: UserPublic): Promise<Refund[]> {
-    return this.refundsService.find({ customer_id: uid });
+    return this.refundsService.find({ customer_id: uid, visible: true });
   }
 
   @Roles(UserRole.Admin)
@@ -38,10 +38,18 @@ export class RefundsController {
 
   @Roles(UserRole.Admin)
   @Post(':order_id/update')
-  async refund(
+  update_admin(
     @Param() { order_id }: OrderIdParam,
-    @Body() body: UpdateRefundDTO,
+    @Body() body: UpdateRefundStatus,
   ): Promise<Refund> {
     return this.refundsService.updateOne({ order_id }, body);
+  }
+
+  @Post(':order_id/delete')
+  delete(@User() { uid }: UserPublic, @Param() { order_id }: OrderIdParam) {
+    return this.refundsService.updateOne(
+      { order_id, customer_id: uid },
+      { visible: false },
+    );
   }
 }
