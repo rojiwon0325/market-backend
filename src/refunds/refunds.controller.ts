@@ -3,7 +3,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserRole } from 'src/users/entities/user-role';
 import { Roles } from 'src/users/roles.decorator';
 import { User } from 'src/users/user.decorator';
-import { Refund } from './entities/refund';
+import { Refund, RefundsResponse } from './entities/refund';
 import { RefundsService } from './refunds.service';
 import { OrderIdParam } from 'src/orders/orders.dto';
 import { CreateRefundBody, UpdateRefundStatus } from './refunds.dto';
@@ -13,14 +13,26 @@ export class RefundsController {
   constructor(private readonly refundsService: RefundsService) {}
 
   @Get()
-  find(@User() { uid }: UserPublic): Promise<Refund[]> {
-    return this.refundsService.find({ customer_id: uid, visible: true });
+  async find(@User() { uid }: UserPublic): Promise<RefundsResponse> {
+    return {
+      total: await this.refundsService.count({
+        customer_id: uid,
+        visible: true,
+      }),
+      refunds: await this.refundsService.find({
+        customer_id: uid,
+        visible: true,
+      }),
+    };
   }
 
   @Roles(UserRole.Admin)
   @Get('all')
-  find_admin(): Promise<Refund[]> {
-    return this.refundsService.find();
+  async find_admin(): Promise<RefundsResponse> {
+    return {
+      total: await this.refundsService.count(),
+      refunds: await this.refundsService.find(),
+    };
   }
 
   @Get(':order_id')
@@ -31,9 +43,13 @@ export class RefundsController {
     return this.refundsService.findOne({ order_id, customer_id: uid });
   }
 
-  @Post('create')
-  create(@User() { uid }: UserPublic, @Body() body: CreateRefundBody) {
-    return this.refundsService.create({ customer_id: uid, ...body });
+  @Post(':order_id/create')
+  create(
+    @User() { uid }: UserPublic,
+    @Param() { order_id }: OrderIdParam,
+    @Body() body: CreateRefundBody,
+  ): Promise<Refund> {
+    return this.refundsService.create({ customer_id: uid, order_id, ...body });
   }
 
   @Roles(UserRole.Admin)
@@ -46,7 +62,10 @@ export class RefundsController {
   }
 
   @Post(':order_id/delete')
-  delete(@User() { uid }: UserPublic, @Param() { order_id }: OrderIdParam) {
+  delete(
+    @User() { uid }: UserPublic,
+    @Param() { order_id }: OrderIdParam,
+  ): Promise<Refund> {
     return this.refundsService.updateOne(
       { order_id, customer_id: uid },
       { visible: false },

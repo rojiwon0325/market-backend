@@ -14,6 +14,8 @@ import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { Refund } from './entities/refund';
 import { Serializer } from 'src/decorators/Serializer';
+import { OrderStatus } from 'src/orders/entities/order-status';
+import { RefundStatus } from './entities/refund-status';
 
 @Injectable()
 export class RefundsService {
@@ -79,7 +81,25 @@ export class RefundsService {
         uid: data.order_id,
         customer_id: data.customer_id,
       });
+      if (
+        order.status !== OrderStatus.Pending &&
+        data.status === RefundStatus.Canceling
+      ) {
+        throw this.exceptionService.getBadRequestException(
+          ExceptionMessage.CANT_CANCELING,
+        );
+      } else if (
+        order.status === OrderStatus.Pending &&
+        data.status === RefundStatus.Refunding
+      ) {
+        data.status = RefundStatus.Canceling;
+      }
       const result = await this.refundsRepository.create(data);
+      await this.ordersService.updateOne(
+        { uid: order.uid },
+        { status: result.status },
+      );
+      order.status = result.status;
       return { ...result, order };
     }
   }
@@ -95,6 +115,13 @@ export class RefundsService {
         customer_id: refund.customer_id,
         uid: refund.order_id,
       });
+      if ('status' in data) {
+        await this.ordersService.updateOne(
+          { uid: order.uid },
+          { status: refund.status },
+        );
+        order.status = refund.status;
+      }
       return { ...refund, order };
     } else {
       throw this.exceptionService.getNotFoundException(

@@ -8,7 +8,7 @@ import {
   CreateOrderBody,
   OrderIdParam,
   OrdersResponse,
-  UpdateOrderStatus,
+  UpdateOrderStatusBody,
 } from './orders.dto';
 import { OrdersService } from './orders.service';
 
@@ -39,40 +39,6 @@ export class OrdersController {
     };
   }
 
-  /**
-   * 내 환불 취소 내역 불러오기
-   
-  @Get('refunds')
-  async findRefund(@User() { uid }: UserPublic): Promise<Refund[]> {
-    const refunds = await this.refundsService.find({ customer_id: uid });
-    const result = await Promise.all(
-      refunds.map(async (refund) => {
-        const order = await this.ordersService.findOne({
-          uid: refund.order_id,
-          customer_id: uid,
-        });
-        return { ...refund, order };
-      }),
-    );
-    return plainToInstance(Refund, result, { strategy: 'excludeAll' });
-  }
-
-  @Roles(UserRole.Admin)
-  @Get('refunds/all')
-  async findRefund_admin(): Promise<Refund[]> {
-    const refunds = await this.refundsService.find();
-    const result = await Promise.all(
-      refunds.map(async (refund) => {
-        const order = await this.ordersService.findOne({
-          uid: refund.order_id,
-          customer_id: refund.customer_id,
-        });
-        return { ...refund, order };
-      }),
-    );
-    return plainToInstance(Refund, result, { strategy: 'excludeAll' });
-  }
-*/
   @Get(':order_id')
   findOne(
     @User() { uid }: UserPublic,
@@ -95,7 +61,7 @@ export class OrdersController {
   update(
     @Param() { order_id }: OrderIdParam,
     @Body()
-    body: UpdateOrderStatus,
+    body: UpdateOrderStatusBody,
   ) {
     return this.ordersService.updateOne({ uid: order_id }, body);
   }

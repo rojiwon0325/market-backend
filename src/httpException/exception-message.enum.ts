@@ -17,4 +17,5 @@ export enum ExceptionMessage {
   MIN_PRODUCT_PRICE = '상품 가격은 0이상입니다.',
   REQUIRED_PRODUCT_IMAGE_URL = '상품 이미지 주소가 필요합니다.',
   FAIL_UPLOAD = '업로드에 실패하였습니다.',
+  CANT_CANCELING = '이미 배송이 시작된 주문은 취소 요청할 수 없습니다.',
 }

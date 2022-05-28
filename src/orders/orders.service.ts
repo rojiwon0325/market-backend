@@ -61,13 +61,14 @@ export class OrdersService {
       }),
     );
     const total_price = order.items.reduce(
-      (prev, curr) => prev + curr.product_price,
+      (prev, curr) => prev + curr.product_price * curr.count,
       0,
     );
     await this.ordersRepository.updateOne({
       filter: { uid: order.uid },
       data: { total_price },
     });
+    order.total_price = total_price;
     return order;
   }
 

@@ -8,6 +8,11 @@
 
 ## ❗️CheckList
 
+- [x] 환불/취소 요청시 status로 Canceling | Refunding만 가능하도록 변경
+- [x] 환불/취소 상태 변경시(관리자) status가 Canceling -> Cancelled, Refunding -> Refunded 로만 변경
+- [x] 환불/취소 신청 or 상태 변경은 기존 상태에 영향을 받아 차단 되는 경우가 있음 ex) 이미 배송중일 때, 취소는 불가능
+- [x] 환불/취소 정보에 따라 order상태 값 변경
+
 ---
 
 ## 🚩 기능구현
