@@ -7,7 +7,8 @@ import {
   AdminRefundFilter,
   CreateRefundDTO,
   RefundFilter,
-  UpdateRefundDTO,
+  UpdateRefundStatus,
+  UpdateRefundVisible,
 } from './refunds.dto';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
@@ -86,7 +87,7 @@ export class RefundsService {
   @Serializer(Refund)
   async updateOne(
     filter: RefundFilter | AdminRefundFilter,
-    data: UpdateRefundDTO,
+    data: UpdateRefundStatus | UpdateRefundVisible,
   ): Promise<Refund> {
     const refund = await this.refundsRepository.updateOne({ filter, data });
     if (refund) {

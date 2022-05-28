@@ -1,4 +1,4 @@
-import { PartialType, PickType } from '@nestjs/swagger';
+import { PickType } from '@nestjs/swagger';
 import { RefundEntity } from './entities/refund.entity';
 
 export class RefundFilter extends PickType(RefundEntity, [
@@ -21,6 +21,6 @@ export class CreateRefundDTO extends PickType(RefundEntity, [
   'reason',
 ]) {}
 
-export class UpdateRefundDTO extends PickType(PartialType(RefundEntity), [
-  'status',
-]) {}
+export class UpdateRefundStatus extends PickType(RefundEntity, ['status']) {}
+
+export class UpdateRefundVisible extends PickType(RefundEntity, ['visible']) {}
