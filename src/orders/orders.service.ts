@@ -60,6 +60,14 @@ export class OrdersService {
         });
       }),
     );
+    const total_price = order.items.reduce(
+      (prev, curr) => prev + curr.product_price,
+      0,
+    );
+    await this.ordersRepository.updateOne({
+      filter: { uid: order.uid },
+      data: { total_price },
+    });
     return order;
   }
 
