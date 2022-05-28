@@ -81,23 +81,6 @@ export class OrdersController {
     return this.ordersService.findOne({ uid: order_id, customer_id: uid });
   }
 
-  /**
-   * 환불 취소 정보 불러오기
-   
-  @Get(':order_id/refund')
-  async findOneRefund(@Param() { order_id }: OrderIdParam) {
-    const refund = await this.refundsService.findOne({ order_id });
-    const order = await this.ordersService.findOne({
-      uid: refund.order_id,
-      customer_id: refund.customer_id,
-    });
-    return plainToInstance(
-      Refund,
-      { ...refund, order },
-      { strategy: 'excludeAll' },
-    );
-  }*/
-
   @Post('create')
   create(
     @User() { uid }: UserPublic,
@@ -127,48 +110,4 @@ export class OrdersController {
       { visible: false },
     );
   }
-
-  /**
-   * 환불/취소 요청
-   * body에 환불 or 취소 정보 담기
-   
-  @Post(':order_id/refund/create')
-  async createRefund(
-    @User() { uid }: UserPublic,
-    @Param() { order_id }: OrderIdParam,
-    @Body() body: CreateRefundDTO,
-  ): Promise<Refund> {
-    const order = await this.ordersService.findOne({
-      customer_id: uid,
-      uid: order_id,
-    });
-    const refund = await this.refundsService.create(body);
-    return plainToInstance(
-      Refund,
-      { ...refund, order },
-      { strategy: 'excludeAll' },
-    );
-  }
-
-  /**
-   * 환불/취소 요청 처리
-   
-  @Roles(UserRole.Admin)
-  @Post(':order_id/refund/update')
-  async refund(
-    @Param() { order_id }: OrderIdParam,
-    @Body() body: UpdateRefundDTO,
-  ): Promise<any> {
-    const refund = await this.refundsService.updateOne({ order_id }, body);
-    const order = await this.ordersService.findOne({
-      uid: order_id,
-      customer_id: refund.customer_id,
-    });
-
-    return plainToInstance(
-      Refund,
-      { ...refund, order },
-      { strategy: 'excludeAll' },
-    );
-  }*/
 }

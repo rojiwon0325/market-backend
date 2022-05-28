@@ -4,10 +4,11 @@ import { RefundsService } from './refunds.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RefundSchemaProvider } from './entities/refund.entity';
 import { OrdersModule } from 'src/orders/orders.module';
+import { RefundsController } from './refunds.controller';
 
 @Module({
   imports: [MongooseModule.forFeature([RefundSchemaProvider]), OrdersModule],
   providers: [RefundsRepository, RefundsService],
-  exports: [RefundsService],
+  controllers: [RefundsController],
 })
 export class RefundsModule {}

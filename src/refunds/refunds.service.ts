@@ -3,7 +3,12 @@ import { RefundsRepository } from './refunds.repository';
 import { Injectable } from '@nestjs/common';
 import { RefundDocument, RefundEntity } from './entities/refund.entity';
 import { FilterQuery } from 'mongoose';
-import { CreateRefundDTO, RefundFilter, UpdateRefundDTO } from './refunds.dto';
+import {
+  AdminRefundFilter,
+  CreateRefundDTO,
+  RefundFilter,
+  UpdateRefundDTO,
+} from './refunds.dto';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { Refund } from './entities/refund';
@@ -36,7 +41,7 @@ export class RefundsService {
   }
 
   @Serializer(Refund)
-  async findOne(filter: RefundFilter): Promise<Refund> {
+  async findOne(filter: RefundFilter | AdminRefundFilter): Promise<Refund> {
     const refund = await this.refundsRepository.findOne({
       filter,
       cls: RefundEntity,
@@ -80,7 +85,7 @@ export class RefundsService {
 
   @Serializer(Refund)
   async updateOne(
-    filter: RefundFilter,
+    filter: RefundFilter | AdminRefundFilter,
     data: UpdateRefundDTO,
   ): Promise<Refund> {
     const refund = await this.refundsRepository.updateOne({ filter, data });
@@ -96,7 +101,9 @@ export class RefundsService {
       );
     }
   }
-  async deleteOne(filter: RefundFilter): Promise<RefundFilter> {
+  async deleteOne(
+    filter: RefundFilter | AdminRefundFilter,
+  ): Promise<RefundFilter | AdminRefundFilter> {
     const { deletedCount } = await this.refundsRepository.deleteOne(filter);
     if (deletedCount) {
       return filter;
