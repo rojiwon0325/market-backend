@@ -47,15 +47,17 @@ export class OrdersService {
     const order = await this.ordersRepository.createOrder({ customer_id });
     order.items = await Promise.all(
       items.map(async ({ product_id, count }) => {
-        const { uid, name, price } = await this.productsService.findOne({
-          filter: { uid: product_id },
-          cls: ProductSimple,
-        });
+        const { uid, name, price, image_url } =
+          await this.productsService.findOne({
+            filter: { uid: product_id },
+            cls: ProductSimple,
+          });
         return this.ordersRepository.createItem({
           order_id: order.uid,
           product_id: uid,
           product_name: name,
           product_price: price,
+          ...(image_url && { product_image_url: image_url }),
           count,
         });
       }),

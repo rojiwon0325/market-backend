@@ -1,6 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Expose, Type } from 'class-transformer';
-import { IsInt, IsNumber, IsString, IsUUID, Min } from 'class-validator';
+import {
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUrl,
+  IsUUID,
+  Min,
+} from 'class-validator';
 import { Document } from 'mongoose';
 import * as MUUID from 'uuid-mongodb';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
@@ -37,6 +45,11 @@ export class OrderItemEntity {
   @Type(() => Number)
   @Prop({ required: true })
   product_price: number;
+
+  @IsUrl({}, { message: ExceptionMessage.VALIDATION })
+  @IsOptional()
+  @Prop({ required: false })
+  product_image_url?: string;
 
   @IsInt({ message: ExceptionMessage.VALIDATION })
   @Min(1)
