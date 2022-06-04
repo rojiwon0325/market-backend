@@ -11,8 +11,7 @@ import {
 import { Document } from 'mongoose';
 import * as MUUID from 'uuid-mongodb';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
-import { OrderStatus } from './order-status';
-import { RefundStatus } from 'src/refunds/entities/refund-status';
+import { MergedStatus, OrderStatus } from './order-status';
 
 export type OrderDocument = OrderEntity & Document;
 
@@ -37,10 +36,14 @@ export class OrderEntity {
   @Prop({ required: true, default: 0 })
   total_price: number;
 
-  @IsEnum([OrderStatus, RefundStatus])
+  @IsEnum(MergedStatus)
   @Expose()
-  @Prop({ type: String, enum: OrderStatus, default: OrderStatus.Pending })
-  status: OrderStatus | RefundStatus;
+  @Prop({
+    type: String,
+    enum: MergedStatus,
+    default: OrderStatus.Pending,
+  })
+  status: MergedStatus;
 
   @IsBoolean({ message: ExceptionMessage.VALIDATION })
   @Type(() => Boolean)
