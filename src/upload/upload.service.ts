@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ExceptionMessage } from 'src/httpException/exception-message.enum';
 import { HttpExceptionService } from 'src/httpException/http-exception.service';
+import { IEnv } from 'src/interfaces/env';
 import { DeleteFileDTO, UploadFileDTO } from './upload.dto';
 
 @Injectable()

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
+import { IEnv } from 'src/interfaces/env';
 import { UserDetail } from 'src/users/entities/user.detail';
 import { User } from 'src/users/user.decorator';
 import { JWTPayloadDTO, LoginDTO } from './auth.dto';
